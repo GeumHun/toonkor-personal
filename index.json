@@ -12,7 +12,9 @@
         "name": "Toonkor",
         "lang": "ko",
         "id": "6596496791271983268",
-        "baseUrl": "https://tkor151.com"
+        "baseUrl": "https://tkor151.com",
+        "versionId": 1,
+        "hasCloudflare": 0
       }
     ]
   }
