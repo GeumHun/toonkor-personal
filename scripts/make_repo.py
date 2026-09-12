@@ -1,4 +1,4 @@
-"""Publish exactly one Toonkor APK using the upstream Mihon protobuf schema."""
+"""Publish exactly one Toonkor APK with Mihon and Tachimanga indexes."""
 import argparse
 import gzip
 import hashlib
@@ -94,6 +94,26 @@ def main():
     decoded = pb.Index.FromString(gzip.decompress(payload))
     if decoded != index or len(decoded.extensionList.extensions) != 1:
         raise ValueError("Index round-trip validation failed")
+    source = ext["sources"][0]
+    warning_value = pb.ContentWarning.Value(warning) if isinstance(warning, str) else int(warning)
+    legacy_index = [{
+        "name": f"Tachiyomi: {ext['name']}",
+        "pkg": PACKAGE,
+        "apk": apk.name,
+        "lang": source["language"],
+        "code": int(ext["versionName"].rsplit(".", 1)[1]),
+        "version": ext["versionName"],
+        "nsfw": int(warning_value != pb.ContentWarning.Value("CONTENT_WARNING_SAFE")),
+        "sources": [{
+            "name": source["name"],
+            "lang": source["language"],
+            "id": str(source["id"]),
+            "baseUrl": source["homeUrl"],
+        }],
+    }]
+    legacy_payload = json.dumps(legacy_index, ensure_ascii=False, separators=(",", ":"))
+    if json.loads(legacy_payload) != legacy_index or len(legacy_index) != 1:
+        raise ValueError("Legacy index round-trip validation failed")
     out = ROOT / "dist"
     (out / "apk").mkdir(parents=True, exist_ok=True)
     (out / "icon").mkdir(exist_ok=True)
@@ -102,11 +122,13 @@ def main():
     shutil.copy2(apk, out / "apk" / apk.name)
     shutil.copy2(ROOT / "src/ko/toonkor/res/mipmap-xhdpi/ic_launcher.png", out / "icon/toonkor.png")
     (out / "index.pb").write_bytes(payload)
+    (out / "index.min.json").write_text(legacy_payload + "\n", encoding="utf-8")
     # Keep the source license with redistributed binaries.
     shutil.copy2(ROOT / "LICENSE", out / "LICENSE")
     print(f"Toonkor {entry.versionName}; APK SHA-256 {sha256(apk)}")
     print(f"Signing certificate SHA-256: {signing_key}")
     print(f"Mihon URL: {base}/index.pb")
+    print(f"Tachimanga URL: {base}/index.min.json")
 
 
 if __name__ == "__main__":

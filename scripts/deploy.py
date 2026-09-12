@@ -1,5 +1,6 @@
 """Publish generated dist/ to the dedicated repo branch in GitHub Actions."""
 import gzip
+import json
 import os
 from pathlib import Path
 import shutil
@@ -30,6 +31,13 @@ with tempfile.TemporaryDirectory() as temp:
         git("checkout", "-B", "repo", "FETCH_HEAD")
         previous = pb.Index.FromString(gzip.decompress((target / "index.pb").read_bytes()))
         current = pb.Index.FromString(gzip.decompress((root / "dist/index.pb").read_bytes()))
+        legacy = json.loads((root / "dist/index.min.json").read_text(encoding="utf-8"))
+        if len(legacy) != 1 or legacy[0]["pkg"] != "eu.kanade.tachiyomi.extension.ko.toonkor":
+            raise SystemExit("Generated legacy index is not a Toonkor-only repository")
+        current_ext = current.extensionList.extensions[0]
+        if (legacy[0]["version"] != current_ext.versionName or
+                legacy[0]["apk"] != Path(current_ext.resources.apkUrl).name):
+            raise SystemExit("Legacy index does not match the Mihon index")
         if len(previous.extensionList.extensions) != 1 or previous.extensionList.extensions[0].packageName != "eu.kanade.tachiyomi.extension.ko.toonkor":
             raise SystemExit("Existing repo branch is not a Toonkor-only repository")
         if previous.signingKey != current.signingKey and os.environ.get("ALLOW_SIGNER_CHANGE") != "true":
@@ -41,7 +49,7 @@ with tempfile.TemporaryDirectory() as temp:
             new_apks = list((root / "dist/apk").glob("*.apk"))
             if len(old_apks) != 1 or old_apks[0].read_bytes() != new_apks[0].read_bytes():
                 raise SystemExit("APK changed without a versionCode increase")
-        allowed = {"index.pb", "LICENSE", "icon/toonkor.png"}
+        allowed = {"index.pb", "index.min.json", "LICENSE", "icon/toonkor.png"}
         for name in git("ls-files").stdout.splitlines():
             if name not in allowed and not (name.startswith("apk/") and name.endswith(".apk") and name.count("/") == 1):
                 raise SystemExit(f"Unexpected file on repo branch: {name}")
@@ -53,3 +61,4 @@ with tempfile.TemporaryDirectory() as temp:
         git("commit", "-m", "Publish Toonkor")
         git("push", "origin", "HEAD:repo")
     print(f"https://raw.githubusercontent.com/{repository}/repo/index.pb")
+    print(f"https://raw.githubusercontent.com/{repository}/repo/index.min.json")
