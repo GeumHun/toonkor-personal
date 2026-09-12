@@ -1,0 +1,21 @@
+name: Bootstrap Toonkor
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore repository files
+        run: |
+          python - <<'PY'
+          import zipfile
+          zipfile.ZipFile("toonkor-bootstrap.zip").extractall(".")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add standalone Toonkor repository"
+          git push
