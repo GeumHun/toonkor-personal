@@ -32,12 +32,15 @@ with tempfile.TemporaryDirectory() as temp:
         previous = pb.Index.FromString(gzip.decompress((target / "index.pb").read_bytes()))
         current = pb.Index.FromString(gzip.decompress((root / "dist/index.pb").read_bytes()))
         legacy = json.loads((root / "dist/index.min.json").read_text(encoding="utf-8"))
+        repo_metadata = json.loads((root / "dist/repo.json").read_text(encoding="utf-8"))
         if len(legacy) != 1 or legacy[0]["pkg"] != "eu.kanade.tachiyomi.extension.ko.toonkor":
             raise SystemExit("Generated legacy index is not a Toonkor-only repository")
         current_ext = current.extensionList.extensions[0]
         if (legacy[0]["version"] != current_ext.versionName or
                 legacy[0]["apk"] != Path(current_ext.resources.apkUrl).name):
             raise SystemExit("Legacy index does not match the Mihon index")
+        if repo_metadata.get("meta", {}).get("signingKeyFingerprint") != current.signingKey:
+            raise SystemExit("Repository metadata signing fingerprint does not match the Mihon index")
         if len(previous.extensionList.extensions) != 1 or previous.extensionList.extensions[0].packageName != "eu.kanade.tachiyomi.extension.ko.toonkor":
             raise SystemExit("Existing repo branch is not a Toonkor-only repository")
         if previous.signingKey != current.signingKey and os.environ.get("ALLOW_SIGNER_CHANGE") != "true":
@@ -50,7 +53,7 @@ with tempfile.TemporaryDirectory() as temp:
             if len(old_apks) != 1 or old_apks[0].read_bytes() != new_apks[0].read_bytes():
                 raise SystemExit("APK changed without a versionCode increase")
         allowed = {
-            "index.pb", "index.json", "index.min.json", "LICENSE",
+            "index.pb", "index.json", "index.min.json", "repo.json", "LICENSE",
             "icon/toonkor.png", "icon/eu.kanade.tachiyomi.extension.ko.toonkor.png",
         }
         for name in git("ls-files").stdout.splitlines():

@@ -116,6 +116,14 @@ def main():
     legacy_payload = json.dumps(legacy_index, ensure_ascii=False, separators=(",", ":"))
     if json.loads(legacy_payload) != legacy_index or len(legacy_index) != 1:
         raise ValueError("Legacy index round-trip validation failed")
+    repo_metadata = {
+        "index_v2": f"{base}/index.pb",
+        "meta": {
+            "name": "Toonkor Personal",
+            "website": f"https://github.com/{args.repository}",
+            "signingKeyFingerprint": signing_key,
+        },
+    }
     out = ROOT / "dist"
     (out / "apk").mkdir(parents=True, exist_ok=True)
     (out / "icon").mkdir(exist_ok=True)
@@ -127,6 +135,10 @@ def main():
     shutil.copy2(icon, out / "icon" / f"{PACKAGE}.png")
     (out / "index.pb").write_bytes(payload)
     (out / "index.min.json").write_text(legacy_payload + "\n", encoding="utf-8")
+    (out / "repo.json").write_text(
+        json.dumps(repo_metadata, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     (out / "index.json").write_text(
         json.dumps(legacy_index, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
