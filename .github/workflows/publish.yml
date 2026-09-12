@@ -77,7 +77,8 @@ jobs:
           ALLOW_SIGNER_CHANGE: ${{ inputs.allow_signer_change && 'true' || 'false' }}
         run: |
           python scripts/deploy.py
-          echo "Mihon URL: https://raw.githubusercontent.com/$GITHUB_REPOSITORY/repo/index.pb" >> "$GITHUB_STEP_SUMMARY"
+          echo "Android (Mihon): https://raw.githubusercontent.com/$GITHUB_REPOSITORY/repo/index.pb" >> "$GITHUB_STEP_SUMMARY"
+          echo "iOS (Tachimanga): https://raw.githubusercontent.com/$GITHUB_REPOSITORY/repo/index.min.json" >> "$GITHUB_STEP_SUMMARY"
       - name: Remove signing key
         if: always()
         run: rm -f signingkey.jks
