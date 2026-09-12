@@ -14,6 +14,7 @@ jobs:
           import zipfile
           zipfile.ZipFile("toonkor-bootstrap.zip").extractall(".")
           PY
+          rm -f .github/workflows/publish.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
