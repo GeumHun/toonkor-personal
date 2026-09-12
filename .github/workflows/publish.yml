@@ -1,0 +1,83 @@
+name: Publish Toonkor
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['**.md']
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: upstream = original APK; built = build with your signing key
+        type: choice
+        options: [upstream, built]
+        default: upstream
+      allow_signer_change:
+        description: Allow one-time switch from Keiyoushi to your personal signing key
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: toonkor-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      RELEASE_MODE: ${{ inputs.mode || vars.RELEASE_MODE || 'upstream' }}
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install index dependency
+        run: python -m pip install -r requirements.txt
+      - name: Check untouched upstream snapshot
+        if: env.RELEASE_MODE == 'upstream'
+        run: python scripts/verify_upstream.py
+      - name: Set up Java
+        if: env.RELEASE_MODE == 'built'
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c
+        with:
+          java-version: '17'
+          distribution: temurin
+      - name: Set up Gradle
+        if: env.RELEASE_MODE == 'built'
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb
+      - name: Install Android SDK packages
+        if: env.RELEASE_MODE == 'built'
+        run: sdkmanager 'platforms;android-37.0' 'build-tools;37.0.0'
+      - name: Restore personal signing key
+        if: env.RELEASE_MODE == 'built'
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        run: |
+          test -n "$SIGNING_KEY" || { echo 'Configure SIGNING_KEY, ALIAS, KEY_STORE_PASSWORD, KEY_PASSWORD secrets first'; exit 1; }
+          printf '%s' "$SIGNING_KEY" | base64 --decode > signingkey.jks
+      - name: Build and lint Toonkor
+        if: env.RELEASE_MODE == 'built'
+        env:
+          ALIAS: ${{ secrets.ALIAS }}
+          KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: python scripts/build.py
+      - name: Generate original-APK repository
+        if: env.RELEASE_MODE == 'upstream'
+        run: python scripts/make_repo.py --mode upstream
+      - name: Generate personal-build repository
+        if: env.RELEASE_MODE == 'built'
+        run: python scripts/make_repo.py --mode built --apksigner "$ANDROID_HOME/build-tools/37.0.0/apksigner" --aapt "$ANDROID_HOME/build-tools/37.0.0/aapt"
+      - name: Publish repo branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ALLOW_SIGNER_CHANGE: ${{ inputs.allow_signer_change && 'true' || 'false' }}
+        run: |
+          python scripts/deploy.py
+          echo "Mihon URL: https://raw.githubusercontent.com/$GITHUB_REPOSITORY/repo/index.pb" >> "$GITHUB_STEP_SUMMARY"
+      - name: Remove signing key
+        if: always()
+        run: rm -f signingkey.jks
