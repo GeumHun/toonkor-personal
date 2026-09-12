@@ -120,9 +120,15 @@ def main():
     for old in (out / "apk").glob("*.apk"):
         old.unlink()
     shutil.copy2(apk, out / "apk" / apk.name)
-    shutil.copy2(ROOT / "src/ko/toonkor/res/mipmap-xhdpi/ic_launcher.png", out / "icon/toonkor.png")
+    icon = ROOT / "src/ko/toonkor/res/mipmap-xhdpi/ic_launcher.png"
+    shutil.copy2(icon, out / "icon/toonkor.png")
+    shutil.copy2(icon, out / "icon" / f"{PACKAGE}.png")
     (out / "index.pb").write_bytes(payload)
     (out / "index.min.json").write_text(legacy_payload + "\n", encoding="utf-8")
+    (out / "index.json").write_text(
+        json.dumps(legacy_index, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     # Keep the source license with redistributed binaries.
     shutil.copy2(ROOT / "LICENSE", out / "LICENSE")
     print(f"Toonkor {entry.versionName}; APK SHA-256 {sha256(apk)}")

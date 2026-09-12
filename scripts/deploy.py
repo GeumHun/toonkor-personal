@@ -49,7 +49,10 @@ with tempfile.TemporaryDirectory() as temp:
             new_apks = list((root / "dist/apk").glob("*.apk"))
             if len(old_apks) != 1 or old_apks[0].read_bytes() != new_apks[0].read_bytes():
                 raise SystemExit("APK changed without a versionCode increase")
-        allowed = {"index.pb", "index.min.json", "LICENSE", "icon/toonkor.png"}
+        allowed = {
+            "index.pb", "index.json", "index.min.json", "LICENSE",
+            "icon/toonkor.png", "icon/eu.kanade.tachiyomi.extension.ko.toonkor.png",
+        }
         for name in git("ls-files").stdout.splitlines():
             if name not in allowed and not (name.startswith("apk/") and name.endswith(".apk") and name.count("/") == 1):
                 raise SystemExit(f"Unexpected file on repo branch: {name}")
