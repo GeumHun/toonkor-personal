@@ -7,22 +7,26 @@ Keiyoushi의 Toonkor **1.4.9**를 원본 그대로 분리한 저장소입니다.
 1. GitHub에서 원하는 이름으로 **Public 저장소**를 만듭니다. 여기서 ‘개인용’은 직접 관리한다는 뜻입니다. 인증이 필요한 Private 저장소의 raw 주소는 이 구성으로 Mihon에 등록할 수 없습니다.
 2. 이 폴더의 **내용 전체**를 `main` 브랜치 최상위에 올립니다. 바깥의 `toonkor-personal` 폴더 자체를 한 단계 더 넣지 마세요. 숨김 폴더 `.github` 및 점으로 시작하는 설정 파일도 포함합니다.
 3. GitHub의 **Actions → Publish Toonkor**가 실행됩니다. 자동 실행되지 않았다면 **Run workflow → mode: upstream**으로 실행합니다. 이 모드에는 서명 키나 추가 Secrets가 필요 없습니다.
-4. 성공하면 `repo` 브랜치가 자동으로 만들어집니다. 결과 화면의 Summary에 실제 **Mihon URL**이 표시됩니다.
-5. Mihon의 **설정 → 찾아보기 → 확장 저장소 → 추가**에서 그 주소를 입력합니다. 한국어 확장 목록에서 Toonkor를 설치하고, 신뢰 확인이 표시되면 확인합니다. MIXED 분류라 성인 콘텐츠 표시 설정에 따라 목록에서 숨겨질 수 있습니다.
+4. 성공하면 `repo` 브랜치가 자동으로 만들어집니다. 결과 화면의 Summary에 Android와 iOS용 저장소 주소가 표시됩니다.
+5. 앱의 확장 저장소 설정에 운영체제에 맞는 주소를 입력합니다. 한국어 확장 목록에서 Toonkor를 설치하고, 신뢰 확인이 표시되면 확인합니다. MIXED 분류라 성인 콘텐츠 표시 설정에 따라 목록에서 숨겨질 수 있습니다.
 
-입력할 주소의 형식:
+### Android: Mihon
 
-```text
-https://raw.githubusercontent.com/내계정/내저장소/repo/index.pb
-```
-
-Keiyoushi 스타일 주소도 같은 파일을 가리킵니다:
+`index.pb` 주소를 사용합니다.
 
 ```text
-https://github.com/내계정/내저장소/raw/repo/index.pb
+https://raw.githubusercontent.com/GeumHun/toonkor-personal/repo/index.pb
 ```
 
-`내계정`과 `내저장소`를 실제 이름으로 바꿉니다. 주소에 `main`이나 `outputs`를 넣지 않습니다. `repo` 브랜치 생성 전에는 이 주소가 작동하지 않습니다. GitHub Pages 설정은 필요 없습니다. 조직 정책으로 쓰기가 차단된 경우 Actions의 저장소 쓰기 권한을 허용해야 합니다.
+### iOS: Tachimanga
+
+`index.min.json` 주소를 사용합니다.
+
+```text
+https://raw.githubusercontent.com/GeumHun/toonkor-personal/repo/index.min.json
+```
+
+주소에 `main`이나 `outputs`를 넣지 않습니다. `repo` 브랜치 생성 전에는 이 주소가 작동하지 않습니다. GitHub Pages 설정은 필요 없습니다. 조직 정책으로 쓰기가 차단된 경우 Actions의 저장소 쓰기 권한을 허용해야 합니다.
 
 ## GitHub에 올라가는 파일
 
@@ -36,12 +40,13 @@ https://github.com/내계정/내저장소/raw/repo/index.pb
 
 ```text
 index.pb
+index.min.json
 apk/tachiyomi-ko.toonkor-v1.4.9.apk
 icon/toonkor.png
 LICENSE
 ```
 
-APK 이름의 버전은 향후 빌드 버전에 따라 달라집니다. 인덱스의 APK·아이콘 주소는 모두 **본인 저장소**를 가리킵니다. 다른 확장, 외부 APK 링크, JAR, 구형 index.min.json, repo.json, HTML 목록은 배포하지 않습니다. 현재 Mihon의 protobuf 인덱스와 gzip 형식을 사용합니다.
+APK 이름의 버전은 향후 빌드 버전에 따라 달라집니다. 두 인덱스의 APK·아이콘 주소는 모두 **본인 저장소**를 가리킵니다. 다른 확장, 외부 APK 링크, JAR, repo.json, HTML 목록은 배포하지 않습니다. Android Mihon용 `index.pb`는 gzip 압축 protobuf 형식을 유지하며, iOS Tachimanga용 `index.min.json`만 추가로 생성합니다.
 
 Git으로 올리는 예시(이 폴더에서 실행):
 
