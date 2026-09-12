@@ -109,6 +109,8 @@ def main():
             "lang": source["language"],
             "id": str(source["id"]),
             "baseUrl": source["homeUrl"],
+            "versionId": 1,
+            "hasCloudflare": 0,
         }],
     }]
     legacy_payload = json.dumps(legacy_index, ensure_ascii=False, separators=(",", ":"))
