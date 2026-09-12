@@ -42,13 +42,14 @@ https://raw.githubusercontent.com/GeumHun/toonkor-personal/repo/index.min.json
 index.pb
 index.json
 index.min.json
+repo.json
 apk/tachiyomi-ko.toonkor-v1.4.9.apk
 icon/toonkor.png
 icon/eu.kanade.tachiyomi.extension.ko.toonkor.png
 LICENSE
 ```
 
-APK 이름의 버전은 향후 빌드 버전에 따라 달라집니다. 인덱스의 APK·아이콘 주소는 모두 **본인 저장소**를 가리킵니다. 다른 확장, 외부 APK 링크, JAR, repo.json, HTML 목록은 배포하지 않습니다. Android Mihon용 `index.pb`는 gzip 압축 protobuf 형식을 유지합니다. iOS Tachimanga용 `index.min.json`, 호환용 `index.json`, 패키지명 기반 아이콘을 함께 생성합니다. 레거시 JSON의 `apk` 필드는 표준 형식에 따라 파일명만 기록하며 앱이 같은 브랜치의 `apk/` 경로를 붙입니다.
+APK 이름의 버전은 향후 빌드 버전에 따라 달라집니다. 인덱스의 APK·아이콘 주소는 모두 **본인 저장소**를 가리킵니다. 다른 확장, 외부 APK 링크, JAR, HTML 목록은 배포하지 않습니다. Android Mihon용 `index.pb`는 gzip 압축 protobuf 형식을 유지합니다. iOS Tachimanga용 `index.min.json`, 호환용 `index.json`, 패키지명 기반 아이콘을 함께 생성합니다. 레거시 JSON의 `apk` 필드는 표준 형식에 따라 파일명만 기록하며 앱이 같은 브랜치의 `apk/` 경로를 붙입니다.
 
 Git으로 올리는 예시(이 폴더에서 실행):
 
