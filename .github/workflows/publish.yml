@@ -64,7 +64,7 @@ jobs:
           ALIAS: ${{ secrets.ALIAS }}
           KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew :src:ko:toonkor:spotlessApply --no-daemon && python scripts/build.py
+        run: bash ./gradlew :src:ko:toonkor:spotlessApply --no-daemon && python scripts/build.py
       - name: Generate original-APK repository
         if: env.RELEASE_MODE == 'upstream'
         run: python scripts/make_repo.py --mode upstream
