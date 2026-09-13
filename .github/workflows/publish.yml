@@ -71,6 +71,13 @@ jobs:
       - name: Generate personal-build repository
         if: env.RELEASE_MODE == 'built'
         run: python scripts/make_repo.py --mode built --apksigner "$ANDROID_HOME/build-tools/37.0.0/apksigner" --aapt "$ANDROID_HOME/build-tools/37.0.0/aapt"
+      - name: Verify chapter parser bytecode
+        if: env.RELEASE_MODE == 'built'
+        run: |
+          APK="$(find dist/apk -name '*.apk' -print -quit)"
+          unzip -p "$APK" classes.dex > /tmp/toonkor.dex
+          "$ANDROID_HOME/build-tools/37.0.0/dexdump" -d /tmp/toonkor.dex > /tmp/toonkor-dexdump.txt
+          grep -n -A 120 -B 10 'chapterListParse' /tmp/toonkor-dexdump.txt
       - name: Publish repo branch
         env:
           GH_TOKEN: ${{ github.token }}
