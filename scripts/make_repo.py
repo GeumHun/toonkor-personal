@@ -120,6 +120,7 @@ def main():
         "index_v2": f"{base}/index.pb",
         "meta": {
             "name": "Toonkor Personal",
+            "shortName": "TK",
             "website": f"https://github.com/{args.repository}",
             "signingKeyFingerprint": signing_key,
         },
