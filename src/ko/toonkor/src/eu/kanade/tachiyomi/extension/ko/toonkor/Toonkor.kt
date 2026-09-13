@@ -17,6 +17,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.text.SimpleDateFormat
+import java.nio.charset.StandardCharsets
 import java.util.ArrayList
 import java.util.Locale
 import java.util.regex.Matcher
@@ -141,7 +142,7 @@ abstract class Toonkor : HttpSource() {
         }
 
         val decodedBytes: ByteArray = Base64.decode(encoded, Base64.DEFAULT)
-        val decoded: String = String(decodedBytes)
+        val decoded: String = String(decodedBytes, StandardCharsets.UTF_8)
         val matcher: Matcher = pageListPattern.matcher(decoded)
         var pageIndex = 0
 
