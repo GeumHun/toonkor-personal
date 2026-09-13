@@ -56,3 +56,9 @@
 
 # dont obfuscate chromium boundry interfaces, needed for reflections; used by runWebView
 -keepnames interface org.chromium.support_lib_boundary.** { *; }
+
+# Keep Toonkor's iOS-compatible chapter parser in its deliberately simple Java form.
+-keep,allowobfuscation class eu.kanade.tachiyomi.extension.ko.toonkor.ToonkorChapterParser { *; }
+-keepclassmembers,allowobfuscation class eu.kanade.tachiyomi.extension.ko.toonkor.Toonkor {
+    public java.util.List chapterListParse(okhttp3.Response);
+}
