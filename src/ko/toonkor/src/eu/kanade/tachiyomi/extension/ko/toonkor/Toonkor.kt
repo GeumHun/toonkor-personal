@@ -12,7 +12,6 @@ import eu.kanade.tachiyomi.source.online.HttpSource
 import keiyoushi.annotation.Source
 import keiyoushi.utils.asJsoup
 import keiyoushi.utils.firstInstanceOrNull
-import keiyoushi.utils.tryParse
 import okhttp3.Request
 import okhttp3.Response
 import java.text.SimpleDateFormat
@@ -75,18 +74,7 @@ abstract class Toonkor : HttpSource() {
 
     override fun chapterListParse(response: Response): List<SChapter> {
         val document = response.asJsoup()
-        val chapters = mutableListOf<SChapter>()
-
-        for (element in document.select("table.web_list tr:has(td.content__title)")) {
-            val titleElement = element.select("td.content__title")
-            val chapter = SChapter.create()
-            chapter.url = titleElement.attr("data-role")
-            chapter.name = titleElement.text()
-            chapter.date_upload = dateFormat.tryParse(element.select("td.episode__index").text())
-            chapters.add(chapter)
-        }
-
-        return chapters
+        return ToonkorChapterParser.parse(document, dateFormat)
     }
 
     override fun pageListParse(response: Response): List<Page> {
@@ -110,7 +98,7 @@ abstract class Toonkor : HttpSource() {
         TypeFilter(),
         StatusFilter(),
         SortFilter(),
-     )
+    )
 
     companion object {
         private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)
