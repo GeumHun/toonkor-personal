@@ -134,16 +134,10 @@ abstract class Toonkor : HttpSource() {
         }
 
         val scriptData: String = scriptElements.get(0).data()
+        val encodedMatcher: Matcher = quotedValuePattern.matcher(scriptData)
         var encoded: String = scriptData
-        val firstQuoteIndex: Int = scriptData.indexOf(39)
-        if (firstQuoteIndex >= 0) {
-            val encodedStartIndex: Int = firstQuoteIndex + 1
-            val secondQuoteIndex: Int = scriptData.indexOf(39, encodedStartIndex)
-            if (secondQuoteIndex >= 0) {
-                encoded = scriptData.substring(encodedStartIndex, secondQuoteIndex)
-            } else {
-                encoded = scriptData.substring(encodedStartIndex)
-            }
+        if (encodedMatcher.find()) {
+            encoded = encodedMatcher.group(1)
         }
 
         val decodedBytes: ByteArray = Base64.decode(encoded, Base64.DEFAULT)
@@ -178,6 +172,7 @@ abstract class Toonkor : HttpSource() {
 
     companion object {
         private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)
+        private val quotedValuePattern = Pattern.compile("^[^']*'([^']*)(?:'|$)")
         private val pageListPattern = Pattern.compile("src=\"([^\"]*)\"")
     }
 }
