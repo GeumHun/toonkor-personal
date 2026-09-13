@@ -98,7 +98,7 @@ abstract class Toonkor : HttpSource() {
 
         return pageListRegex.findAll(decoded).mapIndexed { i, matchResult ->
             val imageUrl = matchResult.destructured.component1().let { if (it.startsWith("http")) it else baseUrl + it }
-            Page(i, imageUrl = imaeUrl)
+            Page(i, imageUrl = imageUrl)
         }.toList()
     }
 
