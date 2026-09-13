@@ -75,15 +75,18 @@ abstract class Toonkor : HttpSource() {
 
     override fun chapterListParse(response: Response): List<SChapter> {
         val document = response.asJsoup()
-        return document.select("table.web_list tr:has(td.content__title)").map { element ->
-            SChapter.create().apply {
-                element.select("td.content__title").let {
-                    url = it.attr("data-role")
-                    name = it.text()
-                }
-                date_upload = dateFormat.tryParse(element.select("td.episode__index").text())
-            }
+        val chapters = mutableListOf<SChapter>()
+
+        for (element in document.select("table.web_list tr:has(td.content__title)")) {
+            val titleElement = element.select("td.content__title")
+            val chapter = SChapter.create()
+            chapter.url = titleElement.attr("data-role")
+            chapter.name = titleElement.text()
+            chapter.date_upload = dateFormat.tryParse(element.select("td.episode__index").text())
+            chapters.add(chapter)
         }
+
+        return chapters
     }
 
     override fun pageListParse(response: Response): List<Page> {
@@ -95,7 +98,7 @@ abstract class Toonkor : HttpSource() {
 
         return pageListRegex.findAll(decoded).mapIndexed { i, matchResult ->
             val imageUrl = matchResult.destructured.component1().let { if (it.startsWith("http")) it else baseUrl + it }
-            Page(i, imageUrl = imageUrl)
+            Page(i, imageUrl = imaeUrl)
         }.toList()
     }
 
@@ -107,7 +110,7 @@ abstract class Toonkor : HttpSource() {
         TypeFilter(),
         StatusFilter(),
         SortFilter(),
-    )
+     )
 
     companion object {
         private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)
