@@ -2,10 +2,10 @@
   {
     "name": "Tachiyomi: Toonkor",
     "pkg": "eu.kanade.tachiyomi.extension.ko.toonkor",
-    "apk": "tachiyomi-ko.toonkor-v1.4.12.apk",
+    "apk": "tachiyomi-ko.toonkor-v1.4.13.apk",
     "lang": "ko",
-    "code": 12,
-    "version": "1.4.12",
+    "code": 13,
+    "version": "1.4.13",
     "nsfw": 1,
     "sources": [
       {
