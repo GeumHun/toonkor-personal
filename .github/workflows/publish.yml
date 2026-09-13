@@ -50,7 +50,7 @@ jobs:
         uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb
       - name: Install Android SDK packages
         if: env.RELEASE_MODE == 'built'
-        run: sdkmanager 'platforms;android-37.0' 'build-tools;37.0.0'
+        run: "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-37.0' 'build-tools;37.0.0'
       - name: Restore personal signing key
         if: env.RELEASE_MODE == 'built'
         env:
@@ -78,7 +78,7 @@ jobs:
         run: |
           python scripts/deploy.py
           echo "Android (Mihon): https://raw.githubusercontent.com/$GITHUB_REPOSITORY/repo/index.pb" >> "$GITHUB_STEP_SUMMARY"
-          echo "iOS (Tachimanga): https://raw.githubusercontent.com/$GITHUB_REPOSITORY/repo/index.min.json" >> "$GITHUB_STEP_SUMMARY"
+          echo "iOS (Tachimanga): https://raw.githubusercontent.com/$GITXUB_REPOSITORY/repo/index.min.json" >> "$GITHUB_STEP_SUMMARY"
       - name: Remove signing key
         if: always()
         run: rm -f signingkey.jks
