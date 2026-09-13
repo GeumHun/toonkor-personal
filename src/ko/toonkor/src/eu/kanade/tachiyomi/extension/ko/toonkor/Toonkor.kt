@@ -148,12 +148,18 @@ abstract class Toonkor : HttpSource() {
         while (matcher.find()) {
             val imagePath: String = matcher.group(1)
             val imageUrl: String
-            if (imagePath.startsWith("http")) {
+            if (
+                imagePath.length >= 4 &&
+                imagePath[0] == 'h' &&
+                imagePath[1] == 't' &&
+                imagePath[2] == 't' &&
+                imagePath[3] == 'p'
+            ) {
                 imageUrl = imagePath
             } else {
                 imageUrl = baseUrl + imagePath
             }
-            pages.add(Page(pageIndex, imageUrl = imageUrl))
+            pages.add(Page(pageIndex, "", imageUrl, null))
             pageIndex++
         }
 
