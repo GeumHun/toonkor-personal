@@ -148,5 +148,279 @@
         "hasCloudflare": 0
       }
     ]
+  },
+  {
+    "name": "Tachiyomi: SBXH novel (Android)",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.sbxhnovelmihontest",
+    "apk": "tachiyomi-ko.sbxhnovelmihontest-v1.4.26-release.apk",
+    "lang": "ko",
+    "code": 26,
+    "version": "1.4.26",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "SBXH novel (Android)",
+        "lang": "ko",
+        "id": "7692134420511693356",
+        "baseUrl": "https://sbxh9.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: Newtoki 웹툰",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.ntk",
+    "apk": "tachiyomi-ko.ntk-v1.4.58-release.apk",
+    "lang": "ko",
+    "code": 58,
+    "version": "1.4.58",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "Newtoki 웹툰 (Android)",
+        "lang": "ko",
+        "id": "8502946974566317875",
+        "baseUrl": "https://newtoki1.org",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: Newtoki 만화",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.ntkmangatest",
+    "apk": "tachiyomi-ko.ntkmangatest-v1.4.61-release.apk",
+    "lang": "ko",
+    "code": 61,
+    "version": "1.4.61",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "Newtoki 만화 (Android)",
+        "lang": "ko",
+        "id": "138205461751802502",
+        "baseUrl": "https://newtoki1.org",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: Toki 웹툰",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.dctokiwebtoon",
+    "apk": "tachiyomi-ko.dctokiwebtoon-v1.4.31-release.apk",
+    "lang": "ko",
+    "code": 31,
+    "version": "1.4.31",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "Toki 웹툰 (Android)",
+        "lang": "ko",
+        "id": "238960809608595483",
+        "baseUrl": "https://toki31.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: Toki 만화",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.dctokimanga",
+    "apk": "tachiyomi-ko.dctokimanga-v1.6.58-release.apk",
+    "lang": "ko",
+    "code": 58,
+    "version": "1.6.58",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "Toki 만화 (Android)",
+        "lang": "ko",
+        "id": "2211341340599756657",
+        "baseUrl": "https://toki31.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: Blacktoon 웹툰",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.blacktoon",
+    "apk": "tachiyomi-ko.blacktoon-v1.4.32-release.apk",
+    "lang": "ko",
+    "code": 32,
+    "version": "1.4.32",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "Blacktoon 웹툰 (Android)",
+        "lang": "ko",
+        "id": "7080800841003944426",
+        "baseUrl": "https://blacktoon421.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: Jjaptoon 웹툰",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.jjaptoon",
+    "apk": "tachiyomi-ko.jjaptoon-v1.4.17-release.apk",
+    "lang": "ko",
+    "code": 17,
+    "version": "1.4.17",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "Jjaptoon 웹툰 (Android)",
+        "lang": "ko",
+        "id": "616782401575332094",
+        "baseUrl": "https://www.jjaptoon006.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: SBXH 웹툰",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.sbxhwebtoon",
+    "apk": "tachiyomi-ko.sbxhwebtoon-v1.4.30-release.apk",
+    "lang": "ko",
+    "code": 30,
+    "version": "1.4.30",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "SBXH 웹툰 (Android)",
+        "lang": "ko",
+        "id": "8173080177611515968",
+        "baseUrl": "https://sbxh9.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: SBXH 만화",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.sbxhmanga",
+    "apk": "tachiyomi-ko.sbxhmanga-v1.6.48-release.apk",
+    "lang": "ko",
+    "code": 48,
+    "version": "1.6.48",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "SBXH 만화 (Android)",
+        "lang": "ko",
+        "id": "7631033431376211223",
+        "baseUrl": "https://sbxh9.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: 11toon 만화",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.toon11",
+    "apk": "tachiyomi-ko.toon11-v1.4.27-release.apk",
+    "lang": "ko",
+    "code": 27,
+    "version": "1.4.27",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "11toon 만화 (Android)",
+        "lang": "ko",
+        "id": "8796296375202334266",
+        "baseUrl": "https://11toon.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: WFWF 웹툰·만화",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.wfwfv1",
+    "apk": "tachiyomi-ko.wfwfv1-v1.4.22-release.apk",
+    "lang": "ko",
+    "code": 22,
+    "version": "1.4.22",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "WFWF 웹툰 (Android)",
+        "lang": "ko",
+        "id": "2575699175464295490",
+        "baseUrl": "https://wfwf482.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      },
+      {
+        "name": "WFWF 만화 (Android)",
+        "lang": "ko",
+        "id": "5991363410096653120",
+        "baseUrl": "https://wfwf482.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: Naver 웹툰",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.dcnaverwebtoon",
+    "apk": "tachiyomi-ko.dcnaverwebtoon-v1.4.14-release.apk",
+    "lang": "ko",
+    "code": 14,
+    "version": "1.4.14",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "Naver 웹툰 (Android)",
+        "lang": "ko",
+        "id": "3553407558613814216",
+        "baseUrl": "https://comic.naver.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: Goodtoon 웹툰",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest",
+    "apk": "tachiyomi-ko.goodtoonwebtoontest-v1.4.3-release.apk",
+    "lang": "ko",
+    "code": 3,
+    "version": "1.4.3",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "Goodtoon 웹툰 (Android)",
+        "lang": "ko",
+        "id": "760550510744678728",
+        "baseUrl": "https://www.goodtoon002.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: xtoon 웹툰",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.xtoonwebtoon",
+    "apk": "tachiyomi-ko.xtoonwebtoon-v1.4.5-release.apk",
+    "lang": "ko",
+    "code": 5,
+    "version": "1.4.5",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "xtoon 웹툰",
+        "lang": "ko",
+        "id": "4592523259214971588",
+        "baseUrl": "https://newxtoon1.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
   }
 ]
