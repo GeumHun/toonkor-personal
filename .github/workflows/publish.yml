@@ -1,4 +1,4 @@
-name: Publish Toonkor and DC Manga
+name: Publish Toonkor and DC extensions
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Fetch current Android repository
         run: git clone --depth 1 --branch repo "https://github.com/$GITHUB_REPOSITORY.git" existing-repo
-      - name: Add original DC Manga APK to Android repository
+      - name: Add original DC APKs to Android repository
         run: python scripts/make_android_repo.py --existing existing-repo --repository "$GITHUB_REPOSITORY"
       - name: Publish repo branch
         env:
