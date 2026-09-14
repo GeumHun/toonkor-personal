@@ -1,6 +1,7 @@
 """Publish an Android-only repository overlay to the repo branch."""
 import gzip
 import hashlib
+import json
 import os
 from pathlib import Path
 import shutil
@@ -13,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = os.environ["GITHUB_REPOSITORY"]
 DCMANGA = "eu.kanade.tachiyomi.extension.ko.dcmanga"
 TOONKOR = "eu.kanade.tachiyomi.extension.ko.toonkor"
+TOKKI_SIGNAL = "eu.kanade.tachiyomi.extension.ko.tokkisignal"
 
 if not os.environ.get("GH_TOKEN"):
     raise SystemExit("GH_TOKEN is required; run this script in GitHub Actions")
@@ -21,6 +23,12 @@ if not os.environ.get("GH_TOKEN"):
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+
+manifest = json.loads((ROOT / "prebuilt/dc-individual.json").read_text(encoding="utf-8"))
+records = manifest["records"]
+individual_packages = {record["extension"]["packageName"] for record in records}
+if len(records) != 14 or len(individual_packages) != 14:
+    raise SystemExit("Expected exactly 14 individual DC APKs")
 
 with tempfile.TemporaryDirectory() as temp:
     target = Path(temp)
@@ -38,25 +46,31 @@ with tempfile.TemporaryDirectory() as temp:
 
     old_index = pb.Index.FromString(gzip.decompress((target / "index.pb").read_bytes()))
     new_index = pb.Index.FromString(gzip.decompress((ROOT / "dist/index.pb").read_bytes()))
-    old_toonkor = next(item for item in old_index.extensionList.extensions if item.packageName == TOONKOR)
-    new_toonkor = next(item for item in new_index.extensionList.extensions if item.packageName == TOONKOR)
+    old_by_package = {item.packageName: item for item in old_index.extensionList.extensions}
+    new_by_package = {item.packageName: item for item in new_index.extensionList.extensions}
     if old_index.signingKey != new_index.signingKey:
         raise SystemExit("Repository signing key changed")
-    if old_toonkor != new_toonkor:
-        raise SystemExit("Existing Toonkor entry changed")
-    if {item.packageName for item in new_index.extensionList.extensions} != {TOONKOR, DCMANGA}:
-        raise SystemExit("Mihon index must contain exactly Toonkor and DC Manga")
+    if TOONKOR not in old_by_package or DCMANGA not in old_by_package:
+        raise SystemExit("Current repository must contain Toonkor and DC Manga")
+    for package, old_entry in old_by_package.items():
+        if package not in individual_packages and new_by_package.get(package) != old_entry:
+            raise SystemExit(f"Existing extension entry changed: {package}")
+    if set(new_by_package) != set(old_by_package) | individual_packages:
+        raise SystemExit("New Mihon index package set is incomplete or unexpected")
+    if TOKKI_SIGNAL in new_by_package:
+        raise SystemExit("Tokki Signal must not be published")
     for protected in ("index.min.json", "repo.json"):
         if (target / protected).read_bytes() != (ROOT / "dist" / protected).read_bytes():
             raise SystemExit(f"Protected iOS file changed: {protected}")
+    for record in records:
+        apk = ROOT / "dist/apk" / record["apkFile"]
+        if digest(apk) != record["apkSha256"]:
+            raise SystemExit(f"Published APK SHA-256 mismatch: {record['apkFile']}")
 
     shutil.copytree(ROOT / "dist", target, dirs_exist_ok=True)
-    record_apk = ROOT / "dist/apk/tachiyomi-ko.dcmanga-v1.4.6.apk"
-    if digest(record_apk) != "8caea537ba54845fc80dc72435ee04752ace6109704f0000f4ed0d9343da94cd":
-        raise SystemExit("DC Manga APK SHA-256 mismatch")
     git("add", "--all")
     status = git("status", "--porcelain").stdout.strip()
     if status:
-        git("commit", "-m", "Publish DC Manga for Mihon")
+        git("commit", "-m", "Publish DC individual extensions for Mihon")
         git("push", "origin", "HEAD:repo")
     print(f"https://raw.githubusercontent.com/{REPOSITORY}/repo/index.pb")
