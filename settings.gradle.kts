@@ -34,6 +34,7 @@ rootProject.name = "Keiyoushi"
  * Add or remove modules to load as needed for local development here.
  */
 loadIndividualExtension("ko", "toonkor")
+loadIndividualExtension("ko", "goodtoon")
 
 /**
  * ===================================== COMMON CONFIGURATION ======================================
