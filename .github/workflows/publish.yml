@@ -16,21 +16,42 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+      - name: Restore Goodtoon signing key
+        env:
+          GOODTOON_KEYSTORE_B64: ${{ secrets.GOODTOON_KEYSTORE_B64 }}
+        run: |
+          test -n "$GOODTOON_KEYSTORE_B64" || { echo "GOODTOON_KEYSTORE_B64 is not configured"; exit 1; }
+          echo "$GOODTOON_KEYSTORE_B64" | base64 --decode > signingkey.jks
+      - name: Build reconstructed Goodtoon
+        env:
+          KEY_STORE_PASSWORD: ${{ secrets.GOODTOON_KEY_STORE_PASSWORD }}
+          ALIAS: ${{ secrets.GOODTOON_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.GOODTOON_KEY_PASSWORD }}
+        run: |
+          test -n "$KEY_STORE_PASSWORD" && test -n "$ALIAS" && test -n "$KEY_PASSWORD" || { echo "Goodtoon signing secrets are not configured"; exit 1; }
+          ./gradlew :src:ko:goodtoon:lintRelease :src:ko:goodtoon:assembleRelease --no-daemon
       - name: Install index dependency
         run: python -m pip install -r requirements.txt
       - name: Fetch current Android repository
         run: git clone --depth 1 --branch repo "https://github.com/$GITHUB_REPOSITORY.git" existing-repo
       - name: Build curated Android repository
-        run: python scripts/make_android_repo.py --existing existing-repo --repository "$GITHUB_REPOSITORY"
+        run: |
+          GOODTOON_APK=$(find src/ko/goodtoon/build/outputs/apk/release -name 'tachiyomi-ko.goodtoonwebtoontest-v1.4.4.apk' -print -quit)
+          test -n "$GOODTOON_APK"
+          python scripts/make_android_repo.py \
+            --existing existing-repo \
+            --goodtoon-apk "$GOODTOON_APK" \
+            --goodtoon-source-info src/ko/goodtoon/build/keiyoushi-source-info.json \
+            --goodtoon-icon src/ko/goodtoon/res/mipmap-xxxhdpi/ic_launcher.png \
+            --repository "$GITHUB_REPOSITORY"
       - name: Publish repo branch
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           python scripts/deploy_android.py
           echo "Mihon: https://raw.githubusercontent.com/$GITHUB_REPOSITORY/repo/index.pb" >> "$GITHUB_STEP_SUMMARY"
-
