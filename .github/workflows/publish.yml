@@ -1,4 +1,4 @@
-name: Publish Toonkor and DC extensions
+name: Publish curated Mihon extensions
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Fetch current Android repository
         run: git clone --depth 1 --branch repo "https://github.com/$GITHUB_REPOSITORY.git" existing-repo
-      - name: Add original DC APKs to Android repository
+      - name: Build curated Android repository
         run: python scripts/make_android_repo.py --existing existing-repo --repository "$GITHUB_REPOSITORY"
       - name: Publish repo branch
         env:
@@ -33,3 +33,4 @@ jobs:
         run: |
           python scripts/deploy_android.py
           echo "Mihon: https://raw.githubusercontent.com/$GITHUB_REPOSITORY/repo/index.pb" >> "$GITHUB_STEP_SUMMARY"
+
