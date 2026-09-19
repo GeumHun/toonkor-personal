@@ -30,6 +30,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           test -n "$KEY_STORE_PASSWORD" && test -n "$ALIAS" && test -n "$KEY_PASSWORD" || { echo "Signing secrets are not configured"; exit 1; }
+          chmod +x gradlew
           ./gradlew :src:ko:goodtoon:lintRelease :src:ko:goodtoon:assembleRelease --no-daemon
       - name: Install index dependency
         run: python -m pip install -r requirements.txt
