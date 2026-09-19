@@ -4,34 +4,6 @@
   "excludedPackage": "eu.kanade.tachiyomi.extension.ko.tokkisignal",
   "records": [
     {
-      "upstreamUrl": "https://dc-toki.pages.dev/apk/tachiyomi-ko.sbxhnovelmihontest-v1.4.26-release.apk",
-      "apkFile": "tachiyomi-ko.sbxhnovelmihontest-v1.4.26-release.apk",
-      "apkSha256": "61550972b79e5a1febbab2707e7d4c82c22634e3c8815bad811238337fa95ec4",
-      "extension": {
-        "name": "SBXH novel (Android)",
-        "legacyName": "Tachiyomi: SBXH novel (Android)",
-        "packageName": "eu.kanade.tachiyomi.extension.ko.sbxhnovelmihontest",
-        "versionCode": 26,
-        "versionName": "1.4.26",
-        "extensionLib": "1.4",
-        "contentWarning": "CONTENT_WARNING_NSFW",
-        "sources": [
-          {
-            "id": "7692134420511693356",
-            "name": "SBXH novel (Android)",
-            "language": "ko",
-            "homeUrl": "https://sbxh9.com",
-            "versionId": 1,
-            "hasCloudflare": 0
-          }
-        ]
-      },
-      "upstreamIndexName": "Tachiyomi: SBXH novel (Android)",
-      "apkLabel": "Tachiyomi: SBXH novel (Android)",
-      "signingKeyFingerprint": "7762e5f981805968f73bab8c5289915f706beb319cce1bd3f5930bcf5aa79a2e",
-      "iconFile": "sbxhnovelmihontest.png"
-    },
-    {
       "upstreamUrl": "https://dc-toki.pages.dev/apk/tachiyomi-ko.ntk-v1.4.58-release.apk",
       "apkFile": "tachiyomi-ko.ntk-v1.4.58-release.apk",
       "apkSha256": "f586bfdfaef1fa44b983e2c906d9649f8c30369fe386a89b5998254296e2882c",
@@ -172,34 +144,6 @@
       "iconFile": "blacktoon.png"
     },
     {
-      "upstreamUrl": "https://dc-toki.pages.dev/apk/tachiyomi-ko.jjaptoon-v1.4.17-release.apk",
-      "apkFile": "tachiyomi-ko.jjaptoon-v1.4.17-release.apk",
-      "apkSha256": "0ecd4e2182eaa6056c648bace65ce6e8725b1cf164a9deee84e8edb774a6d703",
-      "extension": {
-        "name": "Jjaptoon 웹툰",
-        "legacyName": "Tachiyomi: Jjaptoon 웹툰",
-        "packageName": "eu.kanade.tachiyomi.extension.ko.jjaptoon",
-        "versionCode": 17,
-        "versionName": "1.4.17",
-        "extensionLib": "1.4",
-        "contentWarning": "CONTENT_WARNING_NSFW",
-        "sources": [
-          {
-            "id": "616782401575332094",
-            "name": "Jjaptoon 웹툰 (Android)",
-            "language": "ko",
-            "homeUrl": "https://www.jjaptoon006.com",
-            "versionId": 1,
-            "hasCloudflare": 0
-          }
-        ]
-      },
-      "upstreamIndexName": "Tachiyomi: Jjaptoon 웹툰 (Android)",
-      "apkLabel": "Tachiyomi: Jjaptoon 웹툰",
-      "signingKeyFingerprint": "7762e5f981805968f73bab8c5289915f706beb319cce1bd3f5930bcf5aa79a2e",
-      "iconFile": "jjaptoon.png"
-    },
-    {
       "upstreamUrl": "https://dc-toki.pages.dev/apk/tachiyomi-ko.sbxhwebtoon-v1.4.30-release.apk",
       "apkFile": "tachiyomi-ko.sbxhwebtoon-v1.4.30-release.apk",
       "apkSha256": "e20a0b33361668334cf08a484693a64226dd67cdd326a3271e30241998b05d83",
@@ -282,70 +226,6 @@
       "apkLabel": "Tachiyomi: 11toon 만화",
       "signingKeyFingerprint": "7762e5f981805968f73bab8c5289915f706beb319cce1bd3f5930bcf5aa79a2e",
       "iconFile": "toon11.png"
-    },
-    {
-      "upstreamUrl": "https://dc-toki.pages.dev/apk/tachiyomi-ko.wfwfv1-v1.4.22-release.apk",
-      "apkFile": "tachiyomi-ko.wfwfv1-v1.4.22-release.apk",
-      "apkSha256": "664e29eeda7b205670e7296d6c9c314c934af0626ec24cf823620280c1260170",
-      "extension": {
-        "name": "WFWF 웹툰·만화",
-        "legacyName": "Tachiyomi: WFWF 웹툰·만화",
-        "packageName": "eu.kanade.tachiyomi.extension.ko.wfwfv1",
-        "versionCode": 22,
-        "versionName": "1.4.22",
-        "extensionLib": "1.4",
-        "contentWarning": "CONTENT_WARNING_NSFW",
-        "sources": [
-          {
-            "id": "2575699175464295490",
-            "name": "WFWF 웹툰 (Android)",
-            "language": "ko",
-            "homeUrl": "https://wfwf482.com",
-            "versionId": 1,
-            "hasCloudflare": 0
-          },
-          {
-            "id": "5991363410096653120",
-            "name": "WFWF 만화 (Android)",
-            "language": "ko",
-            "homeUrl": "https://wfwf482.com",
-            "versionId": 1,
-            "hasCloudflare": 0
-          }
-        ]
-      },
-      "upstreamIndexName": "Tachiyomi: WFWF 웹툰·만화 (Android)",
-      "apkLabel": "Tachiyomi: WFWF 웹툰·만화",
-      "signingKeyFingerprint": "7762e5f981805968f73bab8c5289915f706beb319cce1bd3f5930bcf5aa79a2e",
-      "iconFile": "wfwfv1.png"
-    },
-    {
-      "upstreamUrl": "https://dc-toki.pages.dev/apk/tachiyomi-ko.dcnaverwebtoon-v1.4.14-release.apk",
-      "apkFile": "tachiyomi-ko.dcnaverwebtoon-v1.4.14-release.apk",
-      "apkSha256": "eb04324fccc6b25226425da5f5fe808b0e38ea3124ce0dadb3c3c5bebeb0c94d",
-      "extension": {
-        "name": "Naver 웹툰",
-        "legacyName": "Tachiyomi: Naver 웹툰",
-        "packageName": "eu.kanade.tachiyomi.extension.ko.dcnaverwebtoon",
-        "versionCode": 14,
-        "versionName": "1.4.14",
-        "extensionLib": "1.4",
-        "contentWarning": "CONTENT_WARNING_NSFW",
-        "sources": [
-          {
-            "id": "3553407558613814216",
-            "name": "Naver 웹툰 (Android)",
-            "language": "ko",
-            "homeUrl": "https://comic.naver.com",
-            "versionId": 1,
-            "hasCloudflare": 0
-          }
-        ]
-      },
-      "upstreamIndexName": "Tachiyomi: Naver 웹툰 (Android)",
-      "apkLabel": "Tachiyomi: Naver 웹툰",
-      "signingKeyFingerprint": "7762e5f981805968f73bab8c5289915f706beb319cce1bd3f5930bcf5aa79a2e",
-      "iconFile": "dcnaverwebtoon.png"
     },
     {
       "upstreamUrl": "https://dc-toki.pages.dev/apk/tachiyomi-ko.goodtoonwebtoontest-v1.4.3-release.apk",
