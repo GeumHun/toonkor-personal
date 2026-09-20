@@ -54,7 +54,7 @@ def replace_goodtoon_entry(entry: pb.Extension, metadata: dict, repository: str,
     entry.versionName = metadata["versionName"]
     entry.contentWarning = metadata["contentWarning"]
     entry.resources.apkUrl = f"https://raw.githubusercontent.com/{repository}/repo/apk/{apk_name}"
-    entry.resources.iconUrl = f"https://raw.githubusercontent.com/{repository}/repo/icon/goodtoonwebtoontest.png"
+    entry.resources.iconUrl = f"https://raw.githubusercontent.com/{repository}/repo/icon/goodtoonwebtoontest-gdt-v1.4.8.png"
     entry.sources.clear()
     source = entry.sources.add()
     source.id = metadata["sources"][0]["id"]
@@ -124,7 +124,7 @@ def main() -> None:
         if sha256(published) != record["apkSha256"]:
             raise SystemExit(f"Published APK differs from original: {record['apkFile']}")
     shutil.copy2(goodtoon_apk, out / "apk" / goodtoon_apk.name)
-    shutil.copy2(goodtoon_icon, out / "icon" / "goodtoonwebtoontest.png")
+    shutil.copy2(goodtoon_icon, out / "icon" / "goodtoonwebtoontest-gdt-v1.4.8.png")
 
     payload = gzip.compress(index.SerializeToString(deterministic=True), mtime=0)
     decoded = pb.Index.FromString(gzip.decompress(payload))
