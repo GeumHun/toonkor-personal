@@ -7,7 +7,7 @@ plugins {
 keiyoushi {
     name = "Goodtoon 웹툰"
     pkgName = "ko.goodtoonwebtoontest"
-    versionCode = 5
+    versionCode = 6
     contentWarning = ContentWarning.NSFW
     libVersion = "1.4"
 
