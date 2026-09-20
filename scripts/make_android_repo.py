@@ -28,7 +28,7 @@ def load_goodtoon_metadata(path: Path) -> dict:
     metadata = json.loads(path.read_text(encoding="utf-8"))
     if metadata["packageName"] != GOODTOON:
         raise SystemExit("Built Goodtoon package name is invalid")
-    if metadata["versionName"] != "1.4.7" or metadata["versionCode"] != 104007:
+    if metadata["versionName"] != "1.4.8" or metadata["versionCode"] != 104008:
         raise SystemExit("Built Goodtoon version is invalid")
     if metadata["extensionLib"] != "1.4" or metadata["contentWarning"] != 3:
         raise SystemExit("Built Goodtoon extension metadata is invalid")
@@ -54,7 +54,7 @@ def replace_goodtoon_entry(entry: pb.Extension, metadata: dict, repository: str,
     entry.versionName = metadata["versionName"]
     entry.contentWarning = metadata["contentWarning"]
     entry.resources.apkUrl = f"https://raw.githubusercontent.com/{repository}/repo/apk/{apk_name}"
-    entry.resources.iconUrl = f"https://raw.githubusercontent.com/{repository}/repo/icon/goodtoonwebtoontest.png"
+    entry.resources.iconUrl = f"https://raw.githubusercontent.com/{repository}/repo/icon/goodtoonwebtoontest-gdt-v1.4.8.png"
     entry.sources.clear()
     source = entry.sources.add()
     source.id = metadata["sources"][0]["id"]
@@ -124,7 +124,7 @@ def main() -> None:
         if sha256(published) != record["apkSha256"]:
             raise SystemExit(f"Published APK differs from original: {record['apkFile']}")
     shutil.copy2(goodtoon_apk, out / "apk" / goodtoon_apk.name)
-    shutil.copy2(goodtoon_icon, out / "icon" / "goodtoonwebtoontest.png")
+    shutil.copy2(goodtoon_icon, out / "icon" / "goodtoonwebtoontest-gdt-v1.4.8.png")
 
     payload = gzip.compress(index.SerializeToString(deterministic=True), mtime=0)
     decoded = pb.Index.FromString(gzip.decompress(payload))
@@ -134,7 +134,7 @@ def main() -> None:
     for package in expected_packages - {GOODTOON}:
         if decoded_by_package[package].SerializeToString(deterministic=True) != original_entries[package]:
             raise SystemExit(f"Retained index entry changed: {package}")
-    if decoded_by_package[GOODTOON].versionCode != 104007 or decoded_by_package[GOODTOON].sources[0].id != 760550510744678728:
+    if decoded_by_package[GOODTOON].versionCode != 104008 or decoded_by_package[GOODTOON].sources[0].id != 760550510744678728:
         raise SystemExit("Reconstructed Goodtoon index entry is invalid")
     (out / "index.pb").write_bytes(payload)
 
@@ -145,8 +145,8 @@ def main() -> None:
         "pkg": GOODTOON,
         "apk": goodtoon_apk.name,
         "lang": "ko",
-        "code": 7,
-        "version": "1.4.7",
+        "code": 8,
+        "version": "1.4.8",
         "nsfw": 1,
         "sources": [{
             "name": "Goodtoon 웹툰 (Android)",
