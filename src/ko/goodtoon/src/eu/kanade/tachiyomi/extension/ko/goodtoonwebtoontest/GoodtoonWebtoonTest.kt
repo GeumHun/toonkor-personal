@@ -1,11 +1,11 @@
 package eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest
 
 import eu.kanade.tachiyomi.network.GET
+import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
-import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.online.HttpSource
 import keiyoushi.annotation.Source
 import keiyoushi.utils.asJsoup
@@ -53,7 +53,7 @@ abstract class GoodtoonWebtoonTest : HttpSource() {
                     ?.ifEmpty { null }
             }
         }
-        val hasNextPage = document.select(".pagination a").any { it.text().contains("´ÙÀ½") }
+        val hasNextPage = document.select(".pagination a").any { it.text().contains("ë‹¤ìŒ") }
         return MangasPage(mangas, hasNextPage)
     }
 
@@ -120,8 +120,8 @@ abstract class GoodtoonWebtoonTest : HttpSource() {
     }
 
     private fun parseStatus(value: String): Int = when {
-        value.contains("¿Ï°á") -> SManga.COMPLETED
-        value.contains("¿¬Àç") -> SManga.ONGOING
+        value.contains("ì™„ê²°") -> SManga.COMPLETED
+        value.contains("ì—°ìž¬") -> SManga.ONGOING
         else -> SManga.UNKNOWN
     }
 }
