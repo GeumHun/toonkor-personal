@@ -1,6 +1,8 @@
 package eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest
 
 import eu.kanade.tachiyomi.network.GET
+import eu.kanade.tachiyomi.network.POST
+import eu.kanade.tachiyomi.source.model.Filter
 import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.Page
@@ -9,12 +11,16 @@ import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.source.online.HttpSource
 import keiyoushi.annotation.Source
 import keiyoushi.utils.asJsoup
+import okhttp3.FormBody
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
 import okhttp3.Response
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import java.text.SimpleDateFormat
+import java.util.ArrayList
+import java.util.Calendar
+import java.util.HashSet
 import java.util.Locale
 
 @Source
@@ -22,98 +28,147 @@ abstract class GoodtoonWebtoonTest : HttpSource() {
 
     override val supportsLatest = true
 
-    override fun popularMangaRequest(page: Int): Request = GET(pageUrl("/recommend/", page), headers)
+    override fun popularMangaRequest(page: Int): Request =
+        listRequest("/", page, category = "webtoon", day = currentDay())
 
     override fun popularMangaParse(response: Response): MangasPage = mangaListParse(response.asJsoup())
 
-    override fun latestUpdatesRequest(page: Int): Request = GET(pageUrl("/", page), headers)
+    override fun latestUpdatesRequest(page: Int): Request = listRequest("/end/", page)
 
     override fun latestUpdatesParse(response: Response): MangasPage = mangaListParse(response.asJsoup())
 
     override fun searchMangaRequest(page: Int, query: String, filters: FilterList): Request {
-        val url = baseUrl.toHttpUrl().newBuilder()
-            .addQueryParameter("q", query)
-            .addQueryParameter("pg", page.toString())
-            .build()
-        return GET(url, headers)
+        val activeFilters = if (filters.isEmpty()) getFilterList() else filters
+        var category = "all"
+        var day = "all"
+        var platform = ""
+
+        for (filter in activeFilters) {
+            when (filter) {
+                is CategoryFilter -> category = filter.value()
+                is DayFilter -> day = filter.value()
+                is PlatformFilter -> platform = filter.value()
+            }
+        }
+
+        return listRequest("/", page, query, category, day, platform)
     }
 
     override fun searchMangaParse(response: Response): MangasPage = mangaListParse(response.asJsoup())
 
-    private fun mangaListParse(document: Document): MangasPage {
-        val mangas = document.select("a.card").mapNotNull { element ->
-            val title = element.selectFirst(".subject")?.text()?.trim().orEmpty()
-            val url = element.attr("abs:href")
-            if (title.isEmpty() || url.isEmpty()) return@mapNotNull null
+    private fun listRequest(
+        path: String,
+        page: Int,
+        query: String = "",
+        category: String = "all",
+        day: String = "all",
+        platform: String = "",
+    ): Request {
+        val builder = baseUrl.toHttpUrl().newBuilder().encodedPath(path)
+        if (query.isNotBlank()) builder.addQueryParameter("q", query.trim())
+        if (category != "all") builder.addQueryParameter("mcat", category)
+        if (day != "all") builder.addQueryParameter("mday", day)
+        if (platform.isNotBlank()) builder.addQueryParameter("plat", platform)
+        builder.addQueryParameter("pg", page.toString())
+        return GET(builder.build(), headers)
+    }
 
-            SManga.create().apply {
-                this.title = title
-                setUrlWithoutDomain(url)
-                thumbnail_url = element.selectFirst(".thumb img:not(.platform-icon)")?.absUrl("src")
-                    ?.ifEmpty { null }
-            }
+    private fun mangaListParse(document: Document): MangasPage {
+        val mangas = ArrayList<SManga>()
+        val seenUrls = HashSet<String>()
+        for (element in document.select("a.card")) {
+            val manga = mangaFromElement(element) ?: continue
+            if (seenUrls.add(manga.url)) mangas.add(manga)
         }
-        val hasNextPage = document.select(".pagination a").any { it.text().contains("다음") }
+        val hasNextPage = document.select("a.page-numbers").any { it.text().contains("다음") }
         return MangasPage(mangas, hasNextPage)
     }
 
+    private fun mangaFromElement(element: Element): SManga? {
+        val url = element.absUrl("href")
+        val title = element.selectFirst(".subject")?.text()?.trim().orEmpty()
+        if (url.isEmpty() || title.isEmpty()) return null
+
+        return SManga.create().apply {
+            this.url = url.toHttpUrl().encodedPath.ensureTrailingSlash()
+            this.title = title
+            thumbnail_url = imageUrl(element.selectFirst(".thumb img:not(.platform-icon)"))
+        }
+    }
+
+    override fun mangaDetailsRequest(manga: SManga): Request = GET(baseUrl + manga.url, headers)
+
     override fun mangaDetailsParse(response: Response): SManga {
         val document = response.asJsoup()
+        val metadata = document.selectFirst(".summary-meta-row .meta-value")?.text().orEmpty()
         return SManga.create().apply {
-            title = document.selectFirst(".summary-title h1, h1")?.text()?.trim().orEmpty()
-            author = document.selectFirst(".manga-summary-author")?.text()?.trim().orEmpty()
+            title = document.selectFirst(".summary-title")?.text()?.trim().orEmpty()
+            thumbnail_url = imageUrl(document.selectFirst(".manga-summary-cover img"))
+            author = document.selectFirst(".manga-summary-author .author-text")?.text()?.trim().orEmpty()
+            genre = document.selectFirst(".manga-summary-genres")?.text()?.trim().orEmpty()
             description = document.selectFirst(".manga-summary-desc")?.text()?.trim().orEmpty()
-            val genreElements = document.select(".manga-summary-genres a").ifEmpty {
-                document.select(".manga-summary-genres")
-            }
-            genre = genreElements
-                .map { it.text().trim() }
-                .filter { it.isNotEmpty() }
-                .distinct()
-                .joinToString(", ")
-            thumbnail_url = document.selectFirst(".manga-summary-cover img")?.absUrl("src")
-                ?.ifEmpty { null }
-            status = parseStatus(document.selectFirst(".summary-meta-row")?.text().orEmpty())
+            status = parseStatus(metadata)
         }
     }
 
-    override fun chapterListParse(response: Response): List<SChapter> = response.asJsoup()
-        .select("li.wp-manga-chapter")
-        .mapNotNull { element -> chapterFromElement(element) }
-
-    private fun chapterFromElement(element: Element): SChapter? {
-        val link = element.selectFirst("a") ?: return null
-        val url = link.absUrl("href")
-        val name = link.text().trim()
-        if (url.isEmpty() || name.isEmpty()) return null
-
-        return SChapter.create().apply {
-            this.url = url.removePrefix(baseUrl)
-            this.name = name
-            date_upload = parseDate(element.selectFirst(".chapter-release-date")?.text().orEmpty())
-        }
+    override fun chapterListRequest(manga: SManga): Request {
+        val url = baseUrl + manga.url.trimEnd('/') + "/ajax/chapters/"
+        return POST(url, headers, FormBody.Builder().build())
     }
 
-    override fun pageListParse(response: Response): List<Page> = response.asJsoup()
-        .select(".reading-content img.wp-manga-chapter-img")
-        .mapIndexedNotNull { index, image ->
-            image.absUrl("src").ifEmpty { image.absUrl("data-src") }.ifEmpty { null }?.let { url ->
-                Page(index, "", url, null)
+    override fun chapterListParse(response: Response): List<SChapter> {
+        val chapters = ArrayList<SChapter>()
+        val seenUrls = HashSet<String>()
+        for (element in response.asJsoup().select("li.wp-manga-chapter")) {
+            val link = element.selectFirst("a") ?: continue
+            val url = link.absUrl("href")
+            val name = link.text().trim()
+            if (url.isEmpty() || name.isEmpty()) continue
+
+            val chapter = SChapter.create().apply {
+                setUrlWithoutDomain(url)
+                this.name = name
+                date_upload = parseDate(element.selectFirst(".chapter-release-date")?.text().orEmpty())
             }
+            if (seenUrls.add(chapter.url)) chapters.add(chapter)
         }
+        return chapters
+    }
+
+    override fun pageListRequest(chapter: SChapter): Request = GET(baseUrl + chapter.url, headers)
+
+    override fun pageListParse(response: Response): List<Page> {
+        val imageUrls = ArrayList<String>()
+        for (element in response.asJsoup().select(".reading-content img, div.page-break img")) {
+            val url = imageUrl(element) ?: continue
+            if (!imageUrls.contains(url)) imageUrls.add(url)
+        }
+        return imageUrls.mapIndexed { index, url -> Page(index, "", url, null) }
+    }
 
     override fun imageUrlParse(response: Response): String = throw UnsupportedOperationException()
 
-    override fun imageRequest(page: Page): Request = GET(page.imageUrl!!, headers)
+    override fun headersBuilder() = super.headersBuilder()
+        .set("User-Agent", "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Mobile Safari/537.36")
+        .set("Referer", "$baseUrl/")
 
-    private fun pageUrl(path: String, page: Int): String {
-        val url = baseUrl + path
-        return if (page <= 1) url else "$url?pg=$page"
+    override fun getFilterList(): FilterList = FilterList(
+        CategoryFilter(),
+        DayFilter(),
+        PlatformFilter(),
+    )
+
+    private fun imageUrl(element: Element?): String? {
+        if (element == null) return null
+        return element.absUrl("data-lazy-src")
+            .ifEmpty { element.absUrl("src") }
+            .ifEmpty { element.absUrl("data-src") }
+            .ifEmpty { null }
     }
 
     private fun parseDate(value: String): Long {
         return try {
-            SimpleDateFormat("yy.MM.dd", Locale.ROOT).parse(value.trim())?.time ?: 0L
+            dateFormat.parse(value.replace(" ", ""))?.time ?: 0L
         } catch (_: Exception) {
             0L
         }
@@ -121,7 +176,79 @@ abstract class GoodtoonWebtoonTest : HttpSource() {
 
     private fun parseStatus(value: String): Int = when {
         value.contains("완결") -> SManga.COMPLETED
-        value.contains("연재") -> SManga.ONGOING
+        value.contains("연재") || value.contains("웹툰") -> SManga.ONGOING
         else -> SManga.UNKNOWN
+    }
+
+    private fun currentDay(): String = when (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
+        Calendar.MONDAY -> "mon"
+        Calendar.TUESDAY -> "tue"
+        Calendar.WEDNESDAY -> "wed"
+        Calendar.THURSDAY -> "thu"
+        Calendar.FRIDAY -> "fri"
+        Calendar.SATURDAY -> "sat"
+        Calendar.SUNDAY -> "sun"
+        else -> "etc"
+    }
+
+    private fun String.ensureTrailingSlash(): String = if (endsWith("/")) this else "$this/"
+
+    private open class GoodtoonFilter(
+        name: String,
+        private val values: Array<Pair<String, String>>,
+    ) : Filter.Select<String>(name, values.map { it.first }.toTypedArray()) {
+        fun value(): String = values[state].second
+    }
+
+    private class CategoryFilter : GoodtoonFilter(
+        "분류",
+        arrayOf(
+            "전체" to "all",
+            "일반웹툰" to "webtoon",
+            "BL/GL" to "bl-gl",
+            "성인웹툰" to "adult",
+        ),
+    )
+
+    private class DayFilter : GoodtoonFilter(
+        "요일",
+        arrayOf(
+            "전체" to "all",
+            "월" to "mon",
+            "화" to "tue",
+            "수" to "wed",
+            "목" to "thu",
+            "금" to "fri",
+            "토" to "sat",
+            "일" to "sun",
+            "열흘" to "etc",
+        ),
+    )
+
+    private class PlatformFilter : GoodtoonFilter(
+        "플랫폼",
+        arrayOf(
+            "전체" to "",
+            "네이버" to "naver",
+            "다음" to "daum",
+            "카카오" to "kakao",
+            "레진" to "rejin",
+            "투믹스" to "tomics",
+            "탑툰" to "toptoon",
+            "코미카" to "comica",
+            "배틀코믹스" to "battlecomics",
+            "코믹GT" to "comicgt",
+            "케이툰" to "ktoon",
+            "애니툰" to "anitoon",
+            "폭스툰" to "foxtoon",
+            "피너툰" to "peanutoon",
+            "봄툰" to "bom",
+            "코미코" to "comico",
+            "무툰" to "mootoon",
+        ),
+    )
+
+    private companion object {
+        val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.ROOT)
     }
 }
