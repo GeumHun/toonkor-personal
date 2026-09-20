@@ -1,4 +1,4 @@
-﻿import io.github.keiyoushi.gradle.api.ContentWarning
+import io.github.keiyoushi.gradle.api.ContentWarning
 
 plugins {
     alias(kei.plugins.extension)
@@ -7,7 +7,7 @@ plugins {
 keiyoushi {
     name = "Goodtoon 웹툰"
     pkgName = "ko.goodtoonwebtoontest"
-    versionCode = 4
+    versionCode = 5
     contentWarning = ContentWarning.NSFW
     libVersion = "1.4"
 
