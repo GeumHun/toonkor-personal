@@ -28,7 +28,7 @@ def load_goodtoon_metadata(path: Path) -> dict:
     metadata = json.loads(path.read_text(encoding="utf-8"))
     if metadata["packageName"] != GOODTOON:
         raise SystemExit("Built Goodtoon package name is invalid")
-    if metadata["versionName"] != "1.4.5" or metadata["versionCode"] != 104005:
+    if metadata["versionName"] != "1.4.6" or metadata["versionCode"] != 104006:
         raise SystemExit("Built Goodtoon version is invalid")
     if metadata["extensionLib"] != "1.4" or metadata["contentWarning"] != 3:
         raise SystemExit("Built Goodtoon extension metadata is invalid")
@@ -134,7 +134,7 @@ def main() -> None:
     for package in expected_packages - {GOODTOON}:
         if decoded_by_package[package].SerializeToString(deterministic=True) != original_entries[package]:
             raise SystemExit(f"Retained index entry changed: {package}")
-    if decoded_by_package[GOODTOON].versionCode != 104005 or decoded_by_package[GOODTOON].sources[0].id != 760550510744678728:
+    if decoded_by_package[GOODTOON].versionCode != 104006 or decoded_by_package[GOODTOON].sources[0].id != 760550510744678728:
         raise SystemExit("Reconstructed Goodtoon index entry is invalid")
     (out / "index.pb").write_bytes(payload)
 
@@ -145,8 +145,8 @@ def main() -> None:
         "pkg": GOODTOON,
         "apk": goodtoon_apk.name,
         "lang": "ko",
-        "code": 5,
-        "version": "1.4.5",
+        "code": 6,
+        "version": "1.4.6",
         "nsfw": 1,
         "sources": [{
             "name": "Goodtoon 웹툰 (Android)",
