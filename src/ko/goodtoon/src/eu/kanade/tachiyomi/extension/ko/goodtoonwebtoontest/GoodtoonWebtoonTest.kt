@@ -174,6 +174,6 @@ abstract class GoodtoonWebtoonTest : HttpSource() {
     ))
 
     private companion object {
-        val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.ROOT)
+        val dateFormat = SimpleDateFormat("yy.MM.dd", Locale.ROOT)
     }
 }
