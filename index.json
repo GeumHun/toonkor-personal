@@ -171,25 +171,6 @@
     ]
   },
   {
-    "name": "Tachiyomi: Goodtoon 웹툰",
-    "pkg": "eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest",
-    "apk": "tachiyomi-ko.goodtoonwebtoontest-v1.4.3-release.apk",
-    "lang": "ko",
-    "code": 3,
-    "version": "1.4.3",
-    "nsfw": 1,
-    "sources": [
-      {
-        "name": "Goodtoon 웹툰 (Android)",
-        "lang": "ko",
-        "id": "760550510744678728",
-        "baseUrl": "https://www.goodtoon002.com",
-        "versionId": 1,
-        "hasCloudflare": 0
-      }
-    ]
-  },
-  {
     "name": "Tachiyomi: xtoon 웹툰",
     "pkg": "eu.kanade.tachiyomi.extension.ko.xtoonwebtoon",
     "apk": "tachiyomi-ko.xtoonwebtoon-v1.4.5-release.apk",
@@ -203,6 +184,25 @@
         "lang": "ko",
         "id": "4592523259214971588",
         "baseUrl": "https://newxtoon1.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: Goodtoon 웹툰",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest",
+    "apk": "tachiyomi-ko.goodtoonwebtoontest-v1.4.4.apk",
+    "lang": "ko",
+    "code": 4,
+    "version": "1.4.4",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "Goodtoon 웹툰 (Android)",
+        "lang": "ko",
+        "id": "760550510744678728",
+        "baseUrl": "https://www.goodtoon004.com",
         "versionId": 1,
         "hasCloudflare": 0
       }
