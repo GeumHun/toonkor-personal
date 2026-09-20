@@ -21,7 +21,7 @@ jobs:
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
         run: |
-          test -n "$SIGNING_KEY" || { echo "SIGNING_KEY is not configured"; exit 1; }
+          test -n "$SIGNING_KEY" || exit 1
           echo "$SIGNING_KEY" | base64 --decode > signingkey.jks
       - name: Build reconstructed Goodtoon
         env:
@@ -29,9 +29,9 @@ jobs:
           ALIAS: ${{ secrets.ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          test -n "$KEY_STORE_PASSWORD" && test -n "$ALIAS" && test -n "$KEY_PASSWORD" || { echo "Signing secrets are not configured"; exit 1; }
+          test -n "$KEY_STORE_PASSWORD" && test -n "$ALIAS" && test -n "$KEY_PASSWORD" || exit 1
           chmod +x gradlew
-          ./gradlew :src:ko:goodtoon:lintRelease :src:ko:goodtoon:assembleRelease --no-daemon
+          ./gradlew :src:ko:goodtoon:spotlessApply :src:ko:goodtoon:lintRelease :src:ko:goodtoon:assembleRelease --no-daemon
       - name: Install index dependency
         run: python -m pip install -r requirements.txt
       - name: Fetch current Android repository
@@ -44,6 +44,4 @@ jobs:
       - name: Publish repo branch
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          python scripts/deploy_android.py
-          echo "Mihon: https://raw.githubusercontent.com/$GITHUB_REPOSITORY/repo/index.pb" >> "$GITHUB_STEP_SUMMARY"
+        run: python scripts/deploy_android.py
