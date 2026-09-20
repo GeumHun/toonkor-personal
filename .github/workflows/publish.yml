@@ -43,7 +43,7 @@ jobs:
         run: git clone --depth 1 --branch repo "https://github.com/$GITHUB_REPOSITORY.git" existing-repo
       - name: Build curated Android repository
         run: |
-          GOODTOON_APK=$(find src/ko/goodtoon/build/outputs/apk/release -name 'tachiyomi-ko.goodtoonwebtoontest-v1.4.5.apk' -print -quit)
+          GOODTOON_APK=$(find src/ko/goodtoon/build/outputs/apk/release -name 'tachiyomi-ko.goodtoonwebtoontest-v1.4.6.apk' -print -quit)
           test -n "$GOODTOON_APK"
           python scripts/make_android_repo.py --existing existing-repo --goodtoon-apk "$GOODTOON_APK" --goodtoon-source-info src/ko/goodtoon/build/keiyoushi-source-info.json --goodtoon-icon src/ko/goodtoon/res/mipmap-xxxhdpi/ic_launcher.png --repository "$GITHUB_REPOSITORY"
       - name: Publish repo branch
