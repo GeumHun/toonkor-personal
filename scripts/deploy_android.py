@@ -67,7 +67,7 @@ with tempfile.TemporaryDirectory() as temp:
         if new_by_package[package] != old_by_package[package]:
             raise SystemExit(f"Retained extension entry changed: {package}")
     goodtoon = new_by_package[GOODTOON]
-    if goodtoon.versionCode != 104005 or goodtoon.versionName != "1.4.5":
+    if goodtoon.versionCode != 104006 or goodtoon.versionName != "1.4.6":
         raise SystemExit("Reconstructed Goodtoon version is invalid")
     if len(goodtoon.sources) != 1 or goodtoon.sources[0].id != 760550510744678728:
         raise SystemExit("Reconstructed Goodtoon source id is invalid")
