@@ -13,9 +13,9 @@ internal const val SORT_TITLE = "?fil=%EC%A0%9C%EB%AA%A9"
 
 open class UriPartFilter(
     displayName: String,
-    private val values: Array<Pair<String, String>>,
-) : Filter.Select<String>(displayName, values.map { it.first }.toTypedArray()) {
-    fun toUriPart(): String = values[state].second
+    private val options: Array<Pair<String, String>>,
+) : Filter.Select<String>(displayName, options.map { it.first }.toTypedArray()) {
+    fun toUriPart(): String = options[state].second
 }
 
 class StatusFilter :
