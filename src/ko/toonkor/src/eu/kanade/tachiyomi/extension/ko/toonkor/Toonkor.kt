@@ -16,7 +16,6 @@ import okhttp3.Response
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
-import java.net.URI
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.ArrayList
@@ -109,7 +108,7 @@ abstract class Toonkor : HttpSource() {
         if (thumbnailElements.isEmpty()) {
             manga.thumbnail_url = null
         } else {
-            manga.thumbnail_url = thumbnailElements.get(0).attr("abs:src")
+            manga.thumbnail_url = thumbnailUrl(thumbnailElements.get(0))
         }
 
         return manga
@@ -173,27 +172,12 @@ abstract class Toonkor : HttpSource() {
     )
 
     private fun thumbnailUrl(element: Element): String? {
-        val image = element.selectFirst("img") ?: return null
-        val attributes = arrayOf("data-src", "data-original", "data-lazy-src", "src", "srcset")
-
-        for (attribute in attributes) {
-            var candidate = image.attr(attribute).trim()
-            if (attribute == "srcset") {
-                candidate = candidate.substringBefore(',').trim().substringBefore(' ')
-            }
-            if (candidate.isEmpty() || candidate.startsWith("data:")) {
-                continue
-            }
-            if (candidate.startsWith("//")) {
-                return "https:$candidate"
-            }
-            if (candidate.startsWith("http://") || candidate.startsWith("https://")) {
-                return candidate
-            }
-            return URI(image.baseUri()).resolve(candidate).toString()
-        }
-
-        return null
+        val image = if (element.tagName() == "img") element else element.selectFirst("img") ?: return null
+        // The site's lazy images use a base64 placeholder in src and the real path in data-src.
+        val attribute = if (image.hasAttr("data-src")) "data-src" else "src"
+        val value = image.attr(attribute)
+        if (value.isEmpty() || value.startsWith("data:")) return null
+        return image.absUrl(attribute)
     }
 
     companion object {

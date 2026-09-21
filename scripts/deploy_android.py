@@ -37,7 +37,7 @@ with tempfile.TemporaryDirectory() as temp:
     if not PACKAGES <= set(old_by_package) or set(new_by_package) != PACKAGES:
         raise SystemExit("Repository package selection is invalid")
     toonkor = new_by_package[TOONKOR]
-    if toonkor.versionCode != 104015 or toonkor.versionName != "1.4.15" or len(toonkor.sources) != 1 or toonkor.sources[0].id != 6596496791271983268:
+    if toonkor.versionCode != 104016 or toonkor.versionName != "1.4.16" or len(toonkor.sources) != 1 or toonkor.sources[0].id != 6596496791271983268:
         raise SystemExit("Updated Toonkor metadata is invalid")
     goodtoon = new_by_package[GOODTOON]
     if goodtoon.versionCode != 104008 or goodtoon.versionName != "1.4.8" or len(goodtoon.sources) != 1 or goodtoon.sources[0].id != 760550510744678728:

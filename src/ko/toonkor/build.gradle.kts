@@ -6,7 +6,7 @@ plugins {
 
 keiyoushi {
     name = "Toonkor"
-    versionCode = 15
+    versionCode = 16
     contentWarning = ContentWarning.MIXED
     libVersion = "1.4"
 

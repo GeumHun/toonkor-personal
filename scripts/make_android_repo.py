@@ -7,8 +7,8 @@ ROOT = Path(__file__).resolve().parents[1]
 TOONKOR = "eu.kanade.tachiyomi.extension.ko.toonkor"
 GOODTOON = "eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest"
 PACKAGES = {TOONKOR, GOODTOON}
-TOONKOR_CODE = 104015
-TOONKOR_VERSION = "1.4.15"
+TOONKOR_CODE = 104016
+TOONKOR_VERSION = "1.4.16"
 TOONKOR_ICON = "toonkor-tk-v1.4.15.png"
 GOODTOON_CODE = 104008
 GOODTOON_VERSION = "1.4.8"
@@ -131,7 +131,7 @@ def main():
 
     readable = json.loads((existing / "index.json").read_text(encoding="utf-8"))
     readable = [entry for entry in readable if entry.get("pkg") not in PACKAGES]
-    readable.append({"name": "Tachiyomi: Toonkor", "pkg": TOONKOR, "apk": toonkor_apk.name, "lang": "ko", "code": 15, "version": TOONKOR_VERSION, "nsfw": 1, "sources": [{"name": "Toonkor", "lang": "ko", "id": "6596496791271983268", "baseUrl": "https://tkor154.com", "versionId": 1, "hasCloudflare": 0}]})
+    readable.append({"name": "Tachiyomi: Toonkor", "pkg": TOONKOR, "apk": toonkor_apk.name, "lang": "ko", "code": 16, "version": TOONKOR_VERSION, "nsfw": 1, "sources": [{"name": "Toonkor", "lang": "ko", "id": "6596496791271983268", "baseUrl": "https://tkor154.com", "versionId": 1, "hasCloudflare": 0}]})
     readable.append({"name": "Tachiyomi: Goodtoon 웹툰", "pkg": GOODTOON, "apk": goodtoon_apk.name, "lang": "ko", "code": 8, "version": GOODTOON_VERSION, "nsfw": 1, "sources": [{"name": "Goodtoon 웹툰 (Android)", "lang": "ko", "id": "760550510744678728", "baseUrl": "https://www.goodtoon004.com", "versionId": 1, "hasCloudflare": 0}]})
     if {entry.get("pkg") for entry in readable} != PACKAGES:
         fail("Readable index contains an unexpected package")
