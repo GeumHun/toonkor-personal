@@ -21,7 +21,7 @@ def fail(message):
 
 def load_toonkor(path):
     meta = json.loads(path.read_text(encoding="utf-8"))
-    expected = {"packageName": TOONKOR, "versionCode": TOONKOR_CODE, "versionName": TOONKOR_VERSION, "extensionLib": "1.4", "contentWarning": 3, "name": "Toonkor"}
+    expected = {"packageName": TOONKOR, "versionCode": TOONKOR_CODE, "versionName": TOONKOR_VERSION, "extensionLib": "1.4", "contentWarning": 2, "name": "Toonkor"}
     if any(meta.get(key) != value for key, value in expected.items()) or len(meta.get("sources", [])) != 1:
         fail("Built Toonkor metadata is invalid")
     source = meta["sources"][0]
