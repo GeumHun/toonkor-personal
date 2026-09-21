@@ -6,14 +6,14 @@ plugins {
 
 keiyoushi {
     name = "Toonkor"
-    versionCode = 14
+    versionCode = 15
     contentWarning = ContentWarning.MIXED
     libVersion = "1.4"
 
     source {
         lang = "ko"
         baseUrl {
-            custom("https://tkor151.com")
+            custom("https://tkor154.com")
         }
     }
 }

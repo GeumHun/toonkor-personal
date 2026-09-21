@@ -16,8 +16,9 @@ import okhttp3.Response
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
-import java.text.SimpleDateFormat
+import java.net.URI
 import java.nio.charset.StandardCharsets
+import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Locale
 import java.util.regex.Matcher
@@ -28,7 +29,7 @@ abstract class Toonkor : HttpSource() {
 
     override val supportsLatest = true
 
-    override fun popularMangaRequest(page: Int): Request = GET("$baseUrl$WEBTOONS_PATH$ALL_STATUS_PATH$SORT_POPULAR", headers)
+    override fun popularMangaRequest(page: Int): Request = GET("$baseUrl$WEBTOONS_PATH$ONGOING_PATH$SORT_POPULAR", headers)
 
     override fun popularMangaParse(response: Response): MangasPage {
         val document: Document = response.asJsoup()
@@ -43,7 +44,7 @@ abstract class Toonkor : HttpSource() {
 
             manga.title = titleElement.select("h3").text()
             manga.setUrlWithoutDomain(titleElement.attr("abs:href"))
-            manga.thumbnail_url = element.select("img").attr("abs:src")
+            manga.thumbnail_url = thumbnailUrl(element)
             mangas.add(manga)
             index++
         }
@@ -51,7 +52,7 @@ abstract class Toonkor : HttpSource() {
         return MangasPage(mangas, false)
     }
 
-    override fun latestUpdatesRequest(page: Int): Request = GET("$baseUrl$WEBTOONS_PATH$ALL_STATUS_PATH$SORT_LATEST", headers)
+    override fun latestUpdatesRequest(page: Int): Request = GET("$baseUrl$WEBTOONS_PATH$ONGOING_PATH$SORT_LATEST", headers)
 
     override fun latestUpdatesParse(response: Response): MangasPage = popularMangaParse(response)
 
@@ -63,19 +64,19 @@ abstract class Toonkor : HttpSource() {
             filterList = filters
         }
 
-        var type: TypeFilter? = null
         var status: StatusFilter? = null
         var sort: SortFilter? = null
+        var genre: GenreFilter? = null
         var index = 0
 
         while (index < filterList.size) {
             val filter: Filter<*> = filterList.get(index)
-            if (filter is TypeFilter) {
-                type = filter
-            } else if (filter is StatusFilter) {
+            if (filter is StatusFilter) {
                 status = filter
             } else if (filter is SortFilter) {
                 sort = filter
+            } else if (filter is GenreFilter) {
+                genre = filter
             }
             index++
         }
@@ -84,16 +85,10 @@ abstract class Toonkor : HttpSource() {
         if (query.length > 0) {
             requestPath = "/bbs/search.php?sfl=wr_subject%7C%7Cwr_content&stx=" + query
         } else {
-            val pathBuilder = StringBuilder()
-            if (type != null) {
-                pathBuilder.append(type.toUriPart())
-            }
-            if (status != null) {
-                pathBuilder.append(status.toUriPart())
-            }
-            if (sort != null) {
-                pathBuilder.append(sort.toUriPart())
-            }
+            val pathBuilder = StringBuilder(WEBTOONS_PATH)
+            pathBuilder.append(status?.toUriPart() ?: ONGOING_PATH)
+            val genrePart = genre?.toUriPart().orEmpty()
+            pathBuilder.append(if (genrePart.isNotEmpty()) genrePart else sort?.toUriPart().orEmpty())
             requestPath = pathBuilder.toString()
         }
 
@@ -170,12 +165,36 @@ abstract class Toonkor : HttpSource() {
     override fun imageUrlParse(response: Response): String = throw UnsupportedOperationException()
 
     override fun getFilterList(): FilterList = FilterList(
-        Filter.Header("Note: can't combine with text search!"),
+        Filter.Header("검색어와 필터는 함께 적용할 수 없습니다."),
         Filter.Separator(),
-        TypeFilter(),
         StatusFilter(),
         SortFilter(),
+        GenreFilter(),
     )
+
+    private fun thumbnailUrl(element: Element): String? {
+        val image = element.selectFirst("img") ?: return null
+        val attributes = arrayOf("data-src", "data-original", "data-lazy-src", "src", "srcset")
+
+        for (attribute in attributes) {
+            var candidate = image.attr(attribute).trim()
+            if (attribute == "srcset") {
+                candidate = candidate.substringBefore(',').trim().substringBefore(' ')
+            }
+            if (candidate.isEmpty() || candidate.startsWith("data:")) {
+                continue
+            }
+            if (candidate.startsWith("//")) {
+                return "https:$candidate"
+            }
+            if (candidate.startsWith("http://") || candidate.startsWith("https://")) {
+                return candidate
+            }
+            return URI(image.baseUri()).resolve(candidate).toString()
+        }
+
+        return null
+    }
 
     companion object {
         private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)

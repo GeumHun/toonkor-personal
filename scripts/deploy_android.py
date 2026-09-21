@@ -36,14 +36,17 @@ with tempfile.TemporaryDirectory() as temp:
         raise SystemExit("Repository signing key changed")
     if not PACKAGES <= set(old_by_package) or set(new_by_package) != PACKAGES:
         raise SystemExit("Repository package selection is invalid")
-    if new_by_package[TOONKOR] != old_by_package[TOONKOR]:
-        raise SystemExit("Retained Toonkor entry changed")
+    toonkor = new_by_package[TOONKOR]
+    if toonkor.versionCode != 104015 or toonkor.versionName != "1.4.15" or len(toonkor.sources) != 1 or toonkor.sources[0].id != 6596496791271983268:
+        raise SystemExit("Updated Toonkor metadata is invalid")
     goodtoon = new_by_package[GOODTOON]
     if goodtoon.versionCode != 104008 or goodtoon.versionName != "1.4.8" or len(goodtoon.sources) != 1 or goodtoon.sources[0].id != 760550510744678728:
         raise SystemExit("Reconstructed Goodtoon metadata is invalid")
-    apk = ROOT / "dist" / "apk" / Path(goodtoon.resources.apkUrl).name
-    if not apk.is_file() or not digest(apk):
-        raise SystemExit("Reconstructed Goodtoon APK is missing")
+    for entry, label in ((toonkor, "Toonkor"), (goodtoon, "Goodtoon")):
+        apk = ROOT / "dist" / "apk" / Path(entry.resources.apkUrl).name
+        icon = ROOT / "dist" / "icon" / Path(entry.resources.iconUrl).name
+        if not apk.is_file() or not digest(apk) or not icon.is_file() or not digest(icon):
+            raise SystemExit(f"{label} APK or icon is missing")
     for name in ("index.min.json", "repo.json"):
         if (target / name).read_bytes() != (ROOT / "dist" / name).read_bytes():
             raise SystemExit(f"Protected file changed: {name}")
