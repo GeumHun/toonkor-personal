@@ -191,6 +191,7 @@ internal fun FilterList.toRule(): Toon11Rule {
             is LatestGenreFilter -> latestGenre = filter.selected
             is RankedGenreFilter -> rankedGenre = filter.selected
             is ZipTypeFilter -> zipType = filter.selected
+            else -> Unit
         }
     }
     return Toon11Rule(listType, latestGenre, rankedGenre, zipType).normalized()
