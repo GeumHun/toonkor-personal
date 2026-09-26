@@ -21,14 +21,14 @@
   {
     "name": "Tachiyomi: Goodtoon 웹툰",
     "pkg": "eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest",
-    "apk": "tachiyomi-ko.goodtoonwebtoontest-v1.4.9.apk",
+    "apk": "tachiyomi-ko.goodtoonwebtoontest-v1.4.10.apk",
     "lang": "ko",
-    "code": 9,
-    "version": "1.4.9",
+    "code": 10,
+    "version": "1.4.10",
     "nsfw": 1,
     "sources": [
       {
-        "name": "Goodtoon 웹툰 (Android)",
+        "name": "Goodtoon 웹툰",
         "lang": "ko",
         "id": "760550510744678728",
         "baseUrl": "https://www.goodtoon004.com",
@@ -59,10 +59,10 @@
   {
     "name": "Tachiyomi: Blacktoon 웹툰",
     "pkg": "eu.kanade.tachiyomi.extension.ko.blacktoon",
-    "apk": "tachiyomi-ko.blacktoon-v1.4.34.apk",
+    "apk": "tachiyomi-ko.blacktoon-v1.4.35.apk",
     "lang": "ko",
-    "code": 34,
-    "version": "1.4.34",
+    "code": 35,
+    "version": "1.4.35",
     "nsfw": 1,
     "sources": [
       {
