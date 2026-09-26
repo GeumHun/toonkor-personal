@@ -2,10 +2,10 @@
   {
     "name": "Tachiyomi: Toonkor",
     "pkg": "eu.kanade.tachiyomi.extension.ko.toonkor",
-    "apk": "tachiyomi-ko.toonkor-v1.4.16.apk",
+    "apk": "tachiyomi-ko.toonkor-v1.4.17.apk",
     "lang": "ko",
-    "code": 16,
-    "version": "1.4.16",
+    "code": 17,
+    "version": "1.4.17",
     "nsfw": 1,
     "sources": [
       {
@@ -21,10 +21,10 @@
   {
     "name": "Tachiyomi: Goodtoon 웹툰",
     "pkg": "eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest",
-    "apk": "tachiyomi-ko.goodtoonwebtoontest-v1.4.8.apk",
+    "apk": "tachiyomi-ko.goodtoonwebtoontest-v1.4.9.apk",
     "lang": "ko",
-    "code": 8,
-    "version": "1.4.8",
+    "code": 9,
+    "version": "1.4.9",
     "nsfw": 1,
     "sources": [
       {
@@ -40,10 +40,10 @@
   {
     "name": "Tachiyomi: 11toon",
     "pkg": "eu.kanade.tachiyomi.extension.ko.toon11",
-    "apk": "tachiyomi-ko.toon11-v1.4.28.apk",
+    "apk": "tachiyomi-ko.toon11-v1.4.29.apk",
     "lang": "ko",
-    "code": 28,
-    "version": "1.4.28",
+    "code": 29,
+    "version": "1.4.29",
     "nsfw": 1,
     "sources": [
       {
