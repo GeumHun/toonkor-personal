@@ -1,4 +1,4 @@
-"""Build the Toonkor and Goodtoon Android Mihon repository."""
+"""Build the curated Android Mihon repository."""
 import argparse, gzip, json, shutil
 from pathlib import Path
 import index_pb2 as pb
@@ -6,13 +6,17 @@ import index_pb2 as pb
 ROOT = Path(__file__).resolve().parents[1]
 TOONKOR = "eu.kanade.tachiyomi.extension.ko.toonkor"
 GOODTOON = "eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest"
-PACKAGES = {TOONKOR, GOODTOON}
+TOON11 = "eu.kanade.tachiyomi.extension.ko.toon11"
+PACKAGES = {TOONKOR, GOODTOON, TOON11}
 TOONKOR_CODE = 104016
 TOONKOR_VERSION = "1.4.16"
 TOONKOR_ICON = "toonkor-tk-v1.4.15.png"
 GOODTOON_CODE = 104008
 GOODTOON_VERSION = "1.4.8"
 GOODTOON_ICON = "goodtoonwebtoontest-gdt-v1.4.8.png"
+TOON11_CODE = 104028
+TOON11_VERSION = "1.4.28"
+TOON11_ICON = "toon11-v1.4.28.png"
 
 
 def fail(message):
@@ -50,6 +54,18 @@ def load_goodtoon(path):
     return meta
 
 
+def load_toon11(path):
+    meta = json.loads(path.read_text(encoding="utf-8"))
+    expected = {"packageName": TOON11, "versionCode": TOON11_CODE, "versionName": TOON11_VERSION, "extensionLib": "1.4", "contentWarning": 2, "name": "11toon"}
+    if any(meta.get(key) != value for key, value in expected.items()) or len(meta.get("sources", [])) != 1:
+        fail("Built 11toon metadata is invalid")
+    source = meta["sources"][0]
+    expected_source = {"id": 8796296375202334266, "name": "11toon 만화", "lang": "ko", "baseUrl": "https://11toon.com"}
+    if any(source.get(key) != value for key, value in expected_source.items()):
+        fail("Built 11toon source identity is invalid")
+    return meta
+
+
 def update_entry(entry, meta, repository, apk_name, icon_name):
     entry.name = meta["name"]
     entry.packageName = meta["packageName"]
@@ -83,6 +99,9 @@ def main():
     parser.add_argument("--goodtoon-apk", type=Path, required=True)
     parser.add_argument("--goodtoon-source-info", type=Path, required=True)
     parser.add_argument("--goodtoon-icon", type=Path, required=True)
+    parser.add_argument("--toon11-apk", type=Path, required=True)
+    parser.add_argument("--toon11-source-info", type=Path, required=True)
+    parser.add_argument("--toon11-icon", type=Path, required=True)
     parser.add_argument("--repository", default="GeumHun/toonkor-personal")
     args = parser.parse_args()
     existing = args.existing.resolve()
@@ -90,22 +109,27 @@ def main():
     toonkor_icon = args.toonkor_icon.resolve()
     goodtoon_apk = args.goodtoon_apk.resolve()
     goodtoon_icon = args.goodtoon_icon.resolve()
-    if any(not asset.is_file() for asset in (toonkor_apk, toonkor_icon, goodtoon_apk, goodtoon_icon)):
+    toon11_apk = args.toon11_apk.resolve()
+    toon11_icon = args.toon11_icon.resolve()
+    if any(not asset.is_file() for asset in (toonkor_apk, toonkor_icon, goodtoon_apk, goodtoon_icon, toon11_apk, toon11_icon)):
         fail("A built APK or icon is missing")
     toonkor = load_toonkor(args.toonkor_source_info.resolve())
     goodtoon = load_goodtoon(args.goodtoon_source_info.resolve())
+    toon11 = load_toon11(args.toon11_source_info.resolve())
 
     index = pb.Index.FromString(gzip.decompress((existing / "index.pb").read_bytes()))
     original = {entry.packageName: entry.SerializeToString(deterministic=True) for entry in index.extensionList.extensions}
-    if not PACKAGES <= set(original):
+    if not {TOONKOR, GOODTOON} <= set(original):
         fail("Existing index is missing Toonkor or Goodtoon")
-    retained = [entry for entry in index.extensionList.extensions if entry.packageName in PACKAGES]
+    retained = [entry for entry in index.extensionList.extensions if entry.packageName in {TOONKOR, GOODTOON}]
     index.extensionList.ClearField("extensions")
     for entry in retained:
         index.extensionList.extensions.add().CopyFrom(entry)
     by_package = {entry.packageName: entry for entry in index.extensionList.extensions}
     update_entry(by_package[TOONKOR], toonkor, args.repository, toonkor_apk.name, TOONKOR_ICON)
     update_entry(by_package[GOODTOON], goodtoon, args.repository, goodtoon_apk.name, GOODTOON_ICON)
+    toon11_entry = index.extensionList.extensions.add()
+    update_entry(toon11_entry, toon11, args.repository, toon11_apk.name, TOON11_ICON)
 
     out = ROOT / "dist"
     if out.exists():
@@ -117,6 +141,8 @@ def main():
     copy(toonkor_icon, out / "icon" / TOONKOR_ICON)
     copy(goodtoon_apk, out / "apk" / goodtoon_apk.name)
     copy(goodtoon_icon, out / "icon" / GOODTOON_ICON)
+    copy(toon11_apk, out / "apk" / toon11_apk.name)
+    copy(toon11_icon, out / "icon" / TOON11_ICON)
 
     payload = gzip.compress(index.SerializeToString(deterministic=True), mtime=0)
     decoded = pb.Index.FromString(gzip.decompress(payload))
@@ -127,19 +153,22 @@ def main():
         fail("Reconstructed Toonkor entry is invalid")
     if entries[GOODTOON].versionCode != GOODTOON_CODE or entries[GOODTOON].sources[0].id != 760550510744678728:
         fail("Reconstructed Goodtoon entry is invalid")
+    if entries[TOON11].versionCode != TOON11_CODE or entries[TOON11].sources[0].id != 8796296375202334266:
+        fail("Reconstructed 11toon entry is invalid")
     (out / "index.pb").write_bytes(payload)
 
     readable = json.loads((existing / "index.json").read_text(encoding="utf-8"))
     readable = [entry for entry in readable if entry.get("pkg") not in PACKAGES]
     readable.append({"name": "Tachiyomi: Toonkor", "pkg": TOONKOR, "apk": toonkor_apk.name, "lang": "ko", "code": 16, "version": TOONKOR_VERSION, "nsfw": 1, "sources": [{"name": "Toonkor", "lang": "ko", "id": "6596496791271983268", "baseUrl": "https://tkor154.com", "versionId": 1, "hasCloudflare": 0}]})
     readable.append({"name": "Tachiyomi: Goodtoon 웹툰", "pkg": GOODTOON, "apk": goodtoon_apk.name, "lang": "ko", "code": 8, "version": GOODTOON_VERSION, "nsfw": 1, "sources": [{"name": "Goodtoon 웹툰 (Android)", "lang": "ko", "id": "760550510744678728", "baseUrl": "https://www.goodtoon004.com", "versionId": 1, "hasCloudflare": 0}]})
+    readable.append({"name": "Tachiyomi: 11toon", "pkg": TOON11, "apk": toon11_apk.name, "lang": "ko", "code": 28, "version": TOON11_VERSION, "nsfw": 1, "sources": [{"name": "11toon 만화", "lang": "ko", "id": "8796296375202334266", "baseUrl": "https://11toon.com", "versionId": 1, "hasCloudflare": 0}]})
     if {entry.get("pkg") for entry in readable} != PACKAGES:
         fail("Readable index contains an unexpected package")
     (out / "index.json").write_text(json.dumps(readable, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     for name in ("index.min.json", "repo.json"):
         if (out / name).read_bytes() != (existing / name).read_bytes():
             fail(f"Protected file changed: {name}")
-    print(f"Published Toonkor {toonkor_apk.name} and Goodtoon {goodtoon_apk.name}")
+    print(f"Published Toonkor {toonkor_apk.name}, Goodtoon {goodtoon_apk.name}, and 11toon {toon11_apk.name}")
 
 
 if __name__ == "__main__":

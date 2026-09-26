@@ -1,4 +1,4 @@
-"""Publish the Toonkor and Goodtoon Android Mihon repository."""
+"""Publish the curated Android Mihon repository."""
 import gzip, hashlib, os, shutil, subprocess, tempfile
 from pathlib import Path
 import index_pb2 as pb
@@ -7,7 +7,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = os.environ["GITHUB_REPOSITORY"]
 TOONKOR = "eu.kanade.tachiyomi.extension.ko.toonkor"
 GOODTOON = "eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest"
-PACKAGES = {TOONKOR, GOODTOON}
+TOON11 = "eu.kanade.tachiyomi.extension.ko.toon11"
+PACKAGES = {TOONKOR, GOODTOON, TOON11}
 if not os.environ.get("GH_TOKEN"):
     raise SystemExit("GH_TOKEN is required; run this script in GitHub Actions")
 
@@ -34,7 +35,7 @@ with tempfile.TemporaryDirectory() as temp:
     new_by_package = {entry.packageName: entry for entry in new.extensionList.extensions}
     if old.signingKey != new.signingKey:
         raise SystemExit("Repository signing key changed")
-    if not PACKAGES <= set(old_by_package) or set(new_by_package) != PACKAGES:
+    if not {TOONKOR, GOODTOON} <= set(old_by_package) or set(new_by_package) != PACKAGES:
         raise SystemExit("Repository package selection is invalid")
     toonkor = new_by_package[TOONKOR]
     if toonkor.versionCode != 104016 or toonkor.versionName != "1.4.16" or len(toonkor.sources) != 1 or toonkor.sources[0].id != 6596496791271983268:
@@ -42,7 +43,10 @@ with tempfile.TemporaryDirectory() as temp:
     goodtoon = new_by_package[GOODTOON]
     if goodtoon.versionCode != 104008 or goodtoon.versionName != "1.4.8" or len(goodtoon.sources) != 1 or goodtoon.sources[0].id != 760550510744678728:
         raise SystemExit("Reconstructed Goodtoon metadata is invalid")
-    for entry, label in ((toonkor, "Toonkor"), (goodtoon, "Goodtoon")):
+    toon11 = new_by_package[TOON11]
+    if toon11.versionCode != 104028 or toon11.versionName != "1.4.28" or len(toon11.sources) != 1 or toon11.sources[0].id != 8796296375202334266:
+        raise SystemExit("Reconstructed 11toon metadata is invalid")
+    for entry, label in ((toonkor, "Toonkor"), (goodtoon, "Goodtoon"), (toon11, "11toon")):
         apk = ROOT / "dist" / "apk" / Path(entry.resources.apkUrl).name
         icon = ROOT / "dist" / "icon" / Path(entry.resources.iconUrl).name
         if not apk.is_file() or not digest(apk) or not icon.is_file() or not digest(icon):
@@ -57,6 +61,6 @@ with tempfile.TemporaryDirectory() as temp:
     shutil.copytree(ROOT / "dist", target, dirs_exist_ok=True)
     git("add", "--all")
     if git("status", "--porcelain").stdout.strip():
-        git("commit", "-m", "Publish Toonkor and Goodtoon for Mihon")
+        git("commit", "-m", "Publish curated Mihon extensions")
         git("push", "origin", "HEAD:repo")
     print(f"https://raw.githubusercontent.com/{REPOSITORY}/repo/index.pb")
