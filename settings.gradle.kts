@@ -35,6 +35,7 @@ rootProject.name = "Keiyoushi"
  */
 loadIndividualExtension("ko", "toonkor")
 loadIndividualExtension("ko", "goodtoon")
+loadIndividualExtension("ko", "toon11")
 
 /**
  * ===================================== COMMON CONFIGURATION ======================================
