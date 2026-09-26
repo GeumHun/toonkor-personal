@@ -36,5 +36,24 @@
         "hasCloudflare": 0
       }
     ]
+  },
+  {
+    "name": "Tachiyomi: 11toon",
+    "pkg": "eu.kanade.tachiyomi.extension.ko.toon11",
+    "apk": "tachiyomi-ko.toon11-v1.4.28.apk",
+    "lang": "ko",
+    "code": 28,
+    "version": "1.4.28",
+    "nsfw": 1,
+    "sources": [
+      {
+        "name": "11toon 만화",
+        "lang": "ko",
+        "id": "8796296375202334266",
+        "baseUrl": "https://11toon.com",
+        "versionId": 1,
+        "hasCloudflare": 0
+      }
+    ]
   }
 ]
