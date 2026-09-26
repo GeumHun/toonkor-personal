@@ -35,8 +35,8 @@ jobs:
         run: |
           test -n "$KEY_STORE_PASSWORD" && test -n "$ALIAS" && test -n "$KEY_PASSWORD" || exit 1
           chmod +x gradlew
-          ./gradlew :src:ko:toonkor:spotlessApply :src:ko:goodtoon:spotlessApply :src:ko:toon11:spotlessApply --no-daemon
-          ./gradlew :src:ko:toonkor:lintRelease :src:ko:toonkor:assembleRelease :src:ko:goodtoon:lintRelease :src:ko:goodtoon:assembleRelease :src:ko:toon11:lintRelease :src:ko:toon11:assembleRelease --no-daemon
+          ./gradlew :src:ko:toonkor:spotlessApply :src:ko:goodtoon:spotlessApply :src:ko:toon11:spotlessApply :src:ko:blacktoon:spotlessApply --no-daemon
+          ./gradlew :src:ko:toonkor:lintRelease :src:ko:toonkor:assembleRelease :src:ko:goodtoon:lintRelease :src:ko:goodtoon:assembleRelease :src:ko:toon11:lintRelease :src:ko:toon11:assembleRelease :src:ko:blacktoon:lintRelease :src:ko:blacktoon:assembleRelease --no-daemon
       - name: Install index dependency
         run: python -m pip install -r requirements.txt
       - name: Fetch current Android repository
@@ -46,8 +46,9 @@ jobs:
           TOONKOR_APK=$(find src/ko/toonkor/build/outputs/apk/release -name 'tachiyomi-ko.toonkor-v1.4.17.apk' -print -quit)
           GOODTOON_APK=$(find src/ko/goodtoon/build/outputs/apk/release -name 'tachiyomi-ko.goodtoonwebtoontest-v1.4.9.apk' -print -quit)
           TOON11_APK=$(find src/ko/toon11/build/outputs/apk/release -name 'tachiyomi-ko.toon11-v1.4.29.apk' -print -quit)
-          test -n "$TOONKOR_APK" && test -n "$GOODTOON_APK" && test -n "$TOON11_APK"
-          python scripts/make_android_repo.py --existing existing-repo --toonkor-apk "$TOONKOR_APK" --toonkor-source-info src/ko/toonkor/build/keiyoushi-source-info.json --toonkor-icon icon/toonkor-gh-v1.4.17.png --goodtoon-apk "$GOODTOON_APK" --goodtoon-source-info src/ko/goodtoon/build/keiyoushi-source-info.json --goodtoon-icon icon/goodtoon-gh-v1.4.9.png --toon11-apk "$TOON11_APK" --toon11-source-info src/ko/toon11/build/keiyoushi-source-info.json --toon11-icon icon/toon11-gh-v1.4.29.png --repository "$GITHUB_REPOSITORY"
+          BLACKTOON_APK=$(find src/ko/blacktoon/build/outputs/apk/release -name 'tachiyomi-ko.blacktoon-v1.4.33.apk' -print -quit)
+          test -n "$TOONKOR_APK" && test -n "$GOODTOON_APK" && test -n "$TOON11_APK" && test -n "$BLACKTOON_APK"
+          python scripts/make_android_repo.py --existing existing-repo --toonkor-apk "$TOONKOR_APK" --toonkor-source-info src/ko/toonkor/build/keiyoushi-source-info.json --toonkor-icon icon/toonkor-gh-v1.4.17.png --goodtoon-apk "$GOODTOON_APK" --goodtoon-source-info src/ko/goodtoon/build/keiyoushi-source-info.json --goodtoon-icon icon/goodtoon-gh-v1.4.9.png --toon11-apk "$TOON11_APK" --toon11-source-info src/ko/toon11/build/keiyoushi-source-info.json --toon11-icon icon/toon11-gh-v1.4.29.png --blacktoon-apk "$BLACKTOON_APK" --blacktoon-source-info src/ko/blacktoon/build/keiyoushi-source-info.json --blacktoon-icon icon/blacktoon-gh-v1.4.33.png --repository "$GITHUB_REPOSITORY"
       - name: Publish repo branch
         env:
           GH_TOKEN: ${{ github.token }}

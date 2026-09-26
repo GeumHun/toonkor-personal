@@ -8,7 +8,8 @@ REPOSITORY = os.environ["GITHUB_REPOSITORY"]
 TOONKOR = "eu.kanade.tachiyomi.extension.ko.toonkor"
 GOODTOON = "eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest"
 TOON11 = "eu.kanade.tachiyomi.extension.ko.toon11"
-PACKAGES = {TOONKOR, GOODTOON, TOON11}
+BLACKTOON = "eu.kanade.tachiyomi.extension.ko.blacktoon"
+PACKAGES = {TOONKOR, GOODTOON, TOON11, BLACKTOON}
 if not os.environ.get("GH_TOKEN"):
     raise SystemExit("GH_TOKEN is required; run this script in GitHub Actions")
 
@@ -46,7 +47,10 @@ with tempfile.TemporaryDirectory() as temp:
     toon11 = new_by_package[TOON11]
     if toon11.versionCode != 104029 or toon11.versionName != "1.4.29" or len(toon11.sources) != 1 or toon11.sources[0].id != 8796296375202334266:
         raise SystemExit("Reconstructed 11toon metadata is invalid")
-    for entry, label in ((toonkor, "Toonkor"), (goodtoon, "Goodtoon"), (toon11, "11toon")):
+    blacktoon = new_by_package[BLACKTOON]
+    if blacktoon.versionCode != 104033 or blacktoon.versionName != "1.4.33" or len(blacktoon.sources) != 1 or blacktoon.sources[0].id != 7080800841003944426:
+        raise SystemExit("Reconstructed Blacktoon metadata is invalid")
+    for entry, label in ((toonkor, "Toonkor"), (goodtoon, "Goodtoon"), (toon11, "11toon"), (blacktoon, "Blacktoon")):
         apk = ROOT / "dist" / "apk" / Path(entry.resources.apkUrl).name
         icon = ROOT / "dist" / "icon" / Path(entry.resources.iconUrl).name
         if not apk.is_file() or not digest(apk) or not icon.is_file() or not digest(icon):
