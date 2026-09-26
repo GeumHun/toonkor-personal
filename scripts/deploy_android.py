@@ -38,13 +38,13 @@ with tempfile.TemporaryDirectory() as temp:
     if not {TOONKOR, GOODTOON} <= set(old_by_package) or set(new_by_package) != PACKAGES:
         raise SystemExit("Repository package selection is invalid")
     toonkor = new_by_package[TOONKOR]
-    if toonkor.versionCode != 104016 or toonkor.versionName != "1.4.16" or len(toonkor.sources) != 1 or toonkor.sources[0].id != 6596496791271983268:
+    if toonkor.versionCode != 104017 or toonkor.versionName != "1.4.17" or len(toonkor.sources) != 1 or toonkor.sources[0].id != 6596496791271983268:
         raise SystemExit("Updated Toonkor metadata is invalid")
     goodtoon = new_by_package[GOODTOON]
-    if goodtoon.versionCode != 104008 or goodtoon.versionName != "1.4.8" or len(goodtoon.sources) != 1 or goodtoon.sources[0].id != 760550510744678728:
+    if goodtoon.versionCode != 104009 or goodtoon.versionName != "1.4.9" or len(goodtoon.sources) != 1 or goodtoon.sources[0].id != 760550510744678728:
         raise SystemExit("Reconstructed Goodtoon metadata is invalid")
     toon11 = new_by_package[TOON11]
-    if toon11.versionCode != 104028 or toon11.versionName != "1.4.28" or len(toon11.sources) != 1 or toon11.sources[0].id != 8796296375202334266:
+    if toon11.versionCode != 104029 or toon11.versionName != "1.4.29" or len(toon11.sources) != 1 or toon11.sources[0].id != 8796296375202334266:
         raise SystemExit("Reconstructed 11toon metadata is invalid")
     for entry, label in ((toonkor, "Toonkor"), (goodtoon, "Goodtoon"), (toon11, "11toon")):
         apk = ROOT / "dist" / "apk" / Path(entry.resources.apkUrl).name

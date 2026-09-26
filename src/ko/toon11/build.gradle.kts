@@ -7,7 +7,7 @@ plugins {
 keiyoushi {
     name = "11toon"
     pkgName = "ko.toon11"
-    versionCode = 28
+    versionCode = 29
     contentWarning = ContentWarning.MIXED
     libVersion = "1.4"
 

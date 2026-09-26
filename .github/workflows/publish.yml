@@ -43,11 +43,11 @@ jobs:
         run: git clone --depth 1 --branch repo "https://github.com/$GITHUB_REPOSITORY.git" existing-repo
       - name: Build curated Android repository
         run: |
-          TOONKOR_APK=$(find src/ko/toonkor/build/outputs/apk/release -name 'tachiyomi-ko.toonkor-v1.4.16.apk' -print -quit)
-          GOODTOON_APK=$(find src/ko/goodtoon/build/outputs/apk/release -name 'tachiyomi-ko.goodtoonwebtoontest-v1.4.8.apk' -print -quit)
-          TOON11_APK=$(find src/ko/toon11/build/outputs/apk/release -name 'tachiyomi-ko.toon11-v1.4.28.apk' -print -quit)
+          TOONKOR_APK=$(find src/ko/toonkor/build/outputs/apk/release -name 'tachiyomi-ko.toonkor-v1.4.17.apk' -print -quit)
+          GOODTOON_APK=$(find src/ko/goodtoon/build/outputs/apk/release -name 'tachiyomi-ko.goodtoonwebtoontest-v1.4.9.apk' -print -quit)
+          TOON11_APK=$(find src/ko/toon11/build/outputs/apk/release -name 'tachiyomi-ko.toon11-v1.4.29.apk' -print -quit)
           test -n "$TOONKOR_APK" && test -n "$GOODTOON_APK" && test -n "$TOON11_APK"
-          python scripts/make_android_repo.py --existing existing-repo --toonkor-apk "$TOONKOR_APK" --toonkor-source-info src/ko/toonkor/build/keiyoushi-source-info.json --toonkor-icon icon/toonkor-tk-v1.4.15.png --goodtoon-apk "$GOODTOON_APK" --goodtoon-source-info src/ko/goodtoon/build/keiyoushi-source-info.json --goodtoon-icon src/ko/goodtoon/res/mipmap-xxxhdpi/ic_launcher.png --toon11-apk "$TOON11_APK" --toon11-source-info src/ko/toon11/build/keiyoushi-source-info.json --toon11-icon src/ko/toon11/res/mipmap-xxxhdpi/ic_launcher.png --repository "$GITHUB_REPOSITORY"
+          python scripts/make_android_repo.py --existing existing-repo --toonkor-apk "$TOONKOR_APK" --toonkor-source-info src/ko/toonkor/build/keiyoushi-source-info.json --toonkor-icon icon/toonkor-gh-v1.4.17.png --goodtoon-apk "$GOODTOON_APK" --goodtoon-source-info src/ko/goodtoon/build/keiyoushi-source-info.json --goodtoon-icon icon/goodtoon-gh-v1.4.9.png --toon11-apk "$TOON11_APK" --toon11-source-info src/ko/toon11/build/keiyoushi-source-info.json --toon11-icon icon/toon11-gh-v1.4.29.png --repository "$GITHUB_REPOSITORY"
       - name: Publish repo branch
         env:
           GH_TOKEN: ${{ github.token }}
