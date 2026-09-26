@@ -59,10 +59,10 @@
   {
     "name": "Tachiyomi: Blacktoon 웹툰",
     "pkg": "eu.kanade.tachiyomi.extension.ko.blacktoon",
-    "apk": "tachiyomi-ko.blacktoon-v1.4.33.apk",
+    "apk": "tachiyomi-ko.blacktoon-v1.4.34.apk",
     "lang": "ko",
-    "code": 33,
-    "version": "1.4.33",
+    "code": 34,
+    "version": "1.4.34",
     "nsfw": 1,
     "sources": [
       {
