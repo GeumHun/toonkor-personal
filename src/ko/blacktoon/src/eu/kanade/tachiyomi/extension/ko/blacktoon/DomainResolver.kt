@@ -22,7 +22,7 @@ internal class DomainResolver(
     private val lock = Any()
 
     val currentBaseUrl: String
-        get() = "https://blacktoon${preferences.getInt(DOMAIN_KEY, DEFAULT_DOMAIN)}.com"
+        get() = domain(readDomainNumber())
 
     fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
@@ -42,11 +42,11 @@ internal class DomainResolver(
     }
 
     private fun findWorkingDomain(): String? = synchronized(lock) {
-        val current = preferences.getInt(DOMAIN_KEY, DEFAULT_DOMAIN)
+        val current = readDomainNumber()
         if (probe(current)) return@synchronized domain(current)
         for (number in (current + 1)..(current + MAX_SCAN)) {
             if (probe(number)) {
-                preferences.edit().putInt(DOMAIN_KEY, number).commit()
+                preferences.edit().putString(DOMAIN_KEY, number.toString()).commit()
                 return@synchronized domain(number)
             }
         }
@@ -71,6 +71,21 @@ internal class DomainResolver(
     }
 
     private fun domain(number: Int) = "https://blacktoon$number.com"
+
+    private fun readDomainNumber(): Int {
+        val stored = preferences.all[DOMAIN_KEY]
+        val number = when (stored) {
+            is Number -> stored.toInt()
+            is String -> stored.filter { it.isDigit() }.toIntOrNull()
+            else -> null
+        }?.takeIf { it > 0 } ?: DEFAULT_DOMAIN
+
+        val normalized = number.toString()
+        if (stored !is String || stored != normalized) {
+            preferences.edit().putString(DOMAIN_KEY, normalized).apply()
+        }
+        return number
+    }
 
     private companion object {
         const val DOMAIN_KEY = "blacktoon_domain_number"

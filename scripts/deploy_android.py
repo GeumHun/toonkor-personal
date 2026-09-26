@@ -48,7 +48,7 @@ with tempfile.TemporaryDirectory() as temp:
     if toon11.versionCode != 104029 or toon11.versionName != "1.4.29" or len(toon11.sources) != 1 or toon11.sources[0].id != 8796296375202334266:
         raise SystemExit("Reconstructed 11toon metadata is invalid")
     blacktoon = new_by_package[BLACKTOON]
-    if blacktoon.versionCode != 104033 or blacktoon.versionName != "1.4.33" or len(blacktoon.sources) != 1 or blacktoon.sources[0].id != 7080800841003944426:
+    if blacktoon.versionCode != 104034 or blacktoon.versionName != "1.4.34" or len(blacktoon.sources) != 1 or blacktoon.sources[0].id != 7080800841003944426:
         raise SystemExit("Reconstructed Blacktoon metadata is invalid")
     for entry, label in ((toonkor, "Toonkor"), (goodtoon, "Goodtoon"), (toon11, "11toon"), (blacktoon, "Blacktoon")):
         apk = ROOT / "dist" / "apk" / Path(entry.resources.apkUrl).name

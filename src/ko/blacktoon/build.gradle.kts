@@ -7,7 +7,7 @@ plugins {
 keiyoushi {
     name = "Blacktoon 웹툰"
     pkgName = "ko.blacktoon"
-    versionCode = 33
+    versionCode = 34
     contentWarning = ContentWarning.MIXED
     libVersion = "1.4"
 

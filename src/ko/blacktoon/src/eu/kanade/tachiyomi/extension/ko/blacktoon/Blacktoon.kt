@@ -207,7 +207,14 @@ abstract class Blacktoon : HttpSource() {
     }
 
     private fun savedRule(key: String, fallback: BlacktoonRule): BlacktoonRule =
-        BlacktoonRule.deserialize(preferences.getString(key, null), fallback)
+        BlacktoonRule.deserialize(readStringPreference(key), fallback)
+
+    private fun readStringPreference(key: String): String? {
+        val stored = preferences.all[key] ?: return null
+        if (stored is String) return stored
+        preferences.edit().remove(key).apply()
+        return null
+    }
 
     private fun saveRule(action: Int, rule: BlacktoonRule) {
         when (action) {
