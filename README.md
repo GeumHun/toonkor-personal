@@ -3,9 +3,9 @@
 이 저장소는 Android Mihon용 개인 확장 네 개만 배포합니다.
 
 - Toonkor — `eu.kanade.tachiyomi.extension.ko.toonkor`, Source ID `6596496791271983268`, 버전 `1.4.17`
-- Goodtoon 웹툰 (Android) — `eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest`, Source ID `760550510744678728`, 버전 `1.4.9`
+- Goodtoon 웹툰 — `eu.kanade.tachiyomi.extension.ko.goodtoonwebtoontest`, Source ID `760550510744678728`, 버전 `1.4.10`
 - 11toon 만화 — `eu.kanade.tachiyomi.extension.ko.toon11`, Source ID `8796296375202334266`, 버전 `1.4.29`
-- Blacktoon 웹툰 — `eu.kanade.tachiyomi.extension.ko.blacktoon`, Source ID `7080800841003944426`, 버전 `1.4.34`
+- Blacktoon 웹툰 — `eu.kanade.tachiyomi.extension.ko.blacktoon`, Source ID `7080800841003944426`, 버전 `1.4.35`
 
 Mihon 등록 주소:
 

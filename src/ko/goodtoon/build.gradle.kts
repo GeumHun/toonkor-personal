@@ -7,12 +7,12 @@ plugins {
 keiyoushi {
     name = "Goodtoon 웹툰"
     pkgName = "ko.goodtoonwebtoontest"
-    versionCode = 9
+    versionCode = 10
     contentWarning = ContentWarning.NSFW
     libVersion = "1.4"
 
     source {
-        name = "Goodtoon 웹툰 (Android)"
+        name = "Goodtoon 웹툰"
         id = 760550510744678728L
         lang = "ko"
         baseUrl {

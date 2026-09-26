@@ -131,7 +131,7 @@ abstract class Blacktoon : HttpSource() {
     private fun loadSeriesScript(index: Int, url: String): List<SeriesItem> {
         val config = loadSiteConfig()
         val path = url.trimStart('/')
-        val body = requestTextWithFallback(config.seriesIncludeUrl + path, "${domainResolver.currentBaseUrl}/$path")
+        val body = requestTextWithFallback(config.rankingIncludeUrl + path, "${domainResolver.currentBaseUrl}/$path")
         val payload = body.substringAfter(" = ").trim().removeSuffix(";")
         return json.decodeFromString<List<SeriesItem>>(payload).onEach { it.listIndex = index }
     }
@@ -142,7 +142,6 @@ abstract class Blacktoon : HttpSource() {
         val fallback = SiteConfig(
             CDN_URL,
             CDN_URL,
-            "${domainResolver.currentBaseUrl}/",
             "${domainResolver.currentBaseUrl}/",
             "${domainResolver.currentBaseUrl}/",
         )
@@ -156,7 +155,6 @@ abstract class Blacktoon : HttpSource() {
                 configUrl(text, "img_domain8"),
                 configUrl(text, "inc_url"),
                 configUrl(text, "inc_url1"),
-                configUrl(text, "inc_url2"),
             )
         }.getOrDefault(fallback)
         siteConfigCache = config
@@ -193,7 +191,7 @@ abstract class Blacktoon : HttpSource() {
     }.getOrElse { requestText(fallback) }
 
     private fun requestText(url: String): String = client.newCall(GET(url, headers)).execute().use { response ->
-        check(response.isSuccessful) { "Blacktoon data request failed: ${response.code}" }
+        check(response.isSuccessful) { "Blacktoon data request failed (${response.code}): $url" }
         response.body.string()
     }
 

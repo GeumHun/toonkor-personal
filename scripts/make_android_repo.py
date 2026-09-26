@@ -12,14 +12,14 @@ PACKAGES = {TOONKOR, GOODTOON, TOON11, BLACKTOON}
 TOONKOR_CODE = 104017
 TOONKOR_VERSION = "1.4.17"
 TOONKOR_ICON = "toonkor-gh-v1.4.17.png"
-GOODTOON_CODE = 104009
-GOODTOON_VERSION = "1.4.9"
+GOODTOON_CODE = 104010
+GOODTOON_VERSION = "1.4.10"
 GOODTOON_ICON = "goodtoon-gh-v1.4.9.png"
 TOON11_CODE = 104029
 TOON11_VERSION = "1.4.29"
 TOON11_ICON = "toon11-gh-v1.4.29.png"
-BLACKTOON_CODE = 104034
-BLACKTOON_VERSION = "1.4.34"
+BLACKTOON_CODE = 104035
+BLACKTOON_VERSION = "1.4.35"
 BLACKTOON_ICON = "blacktoon-gh-v1.4.33.png"
 
 
@@ -52,7 +52,7 @@ def load_goodtoon(path):
     if any(meta.get(key) != value for key, value in expected.items()) or len(meta.get("sources", [])) != 1:
         fail("Built Goodtoon metadata is invalid")
     source = meta["sources"][0]
-    expected_source = {"id": 760550510744678728, "name": "Goodtoon 웹툰 (Android)", "lang": "ko", "baseUrl": "https://www.goodtoon004.com"}
+    expected_source = {"id": 760550510744678728, "name": "Goodtoon 웹툰", "lang": "ko", "baseUrl": "https://www.goodtoon004.com"}
     if any(source.get(key) != value for key, value in expected_source.items()):
         fail("Built Goodtoon source identity is invalid")
     return meta
@@ -195,9 +195,9 @@ def main():
     readable = json.loads((existing / "index.json").read_text(encoding="utf-8"))
     readable = [entry for entry in readable if entry.get("pkg") not in PACKAGES]
     readable.append({"name": "Tachiyomi: Toonkor", "pkg": TOONKOR, "apk": toonkor_apk.name, "lang": "ko", "code": 17, "version": TOONKOR_VERSION, "nsfw": 1, "sources": [{"name": "Toonkor", "lang": "ko", "id": "6596496791271983268", "baseUrl": "https://tkor154.com", "versionId": 1, "hasCloudflare": 0}]})
-    readable.append({"name": "Tachiyomi: Goodtoon 웹툰", "pkg": GOODTOON, "apk": goodtoon_apk.name, "lang": "ko", "code": 9, "version": GOODTOON_VERSION, "nsfw": 1, "sources": [{"name": "Goodtoon 웹툰 (Android)", "lang": "ko", "id": "760550510744678728", "baseUrl": "https://www.goodtoon004.com", "versionId": 1, "hasCloudflare": 0}]})
+    readable.append({"name": "Tachiyomi: Goodtoon 웹툰", "pkg": GOODTOON, "apk": goodtoon_apk.name, "lang": "ko", "code": 10, "version": GOODTOON_VERSION, "nsfw": 1, "sources": [{"name": "Goodtoon 웹툰", "lang": "ko", "id": "760550510744678728", "baseUrl": "https://www.goodtoon004.com", "versionId": 1, "hasCloudflare": 0}]})
     readable.append({"name": "Tachiyomi: 11toon", "pkg": TOON11, "apk": toon11_apk.name, "lang": "ko", "code": 29, "version": TOON11_VERSION, "nsfw": 1, "sources": [{"name": "11toon 만화", "lang": "ko", "id": "8796296375202334266", "baseUrl": "https://11toon.com", "versionId": 1, "hasCloudflare": 0}]})
-    readable.append({"name": "Tachiyomi: Blacktoon 웹툰", "pkg": BLACKTOON, "apk": blacktoon_apk.name, "lang": "ko", "code": 34, "version": BLACKTOON_VERSION, "nsfw": 1, "sources": [{"name": "Blacktoon 웹툰", "lang": "ko", "id": "7080800841003944426", "baseUrl": "https://blacktoon423.com", "versionId": 1, "hasCloudflare": 0}]})
+    readable.append({"name": "Tachiyomi: Blacktoon 웹툰", "pkg": BLACKTOON, "apk": blacktoon_apk.name, "lang": "ko", "code": 35, "version": BLACKTOON_VERSION, "nsfw": 1, "sources": [{"name": "Blacktoon 웹툰", "lang": "ko", "id": "7080800841003944426", "baseUrl": "https://blacktoon423.com", "versionId": 1, "hasCloudflare": 0}]})
     if {entry.get("pkg") for entry in readable} != PACKAGES:
         fail("Readable index contains an unexpected package")
     (out / "index.json").write_text(json.dumps(readable, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

@@ -70,7 +70,6 @@ internal data class SiteConfig(
     val alternateImageDomain: String,
     val rankingIncludeUrl: String,
     val chapterIncludeUrl: String,
-    val seriesIncludeUrl: String,
 )
 
 private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
